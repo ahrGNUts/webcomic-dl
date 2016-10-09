@@ -1,0 +1,6 @@
+*.pyc
+__pycache__
+virtualenv
+build
+#because vim
+.*.swp
