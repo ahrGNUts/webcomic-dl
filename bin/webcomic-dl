@@ -12,14 +12,6 @@ p.add_argument("-i", "--interval",
 		type=float,
 		help="Minimal interval between downloading each comic, to reduce load on the comic server"
 		)
-p.add_argument("-s", "--skip",
-		dest="skip",
-		metavar="n",
-		nargs=1,
-		default=0,
-		type=int,
-		help="Specify which comic to start at. For some comics this may be slow."
-		)
 p.add_argument("-c", "--count",
 		dest="count",
 		metavar="n",
