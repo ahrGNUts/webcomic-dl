@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(name="webcomic-dl",
         version="0.1",
@@ -10,8 +10,8 @@ setup(name="webcomic-dl",
         url="https://dn3s.me/projects/webcomic-dl",
         package_dir={"webcomic_dl": "lib"},
         packages=["webcomic_dl.extractor",
-            "webcomic_dl.downloader"
+            "webcomic_dl"
             ],
-        requires=["requests", "progress"],
+        install_requires=["requests", "progress", "cssselect", "lxml"],
         scripts=["bin/webcomic-dl"]
         )

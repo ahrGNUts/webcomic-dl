@@ -1,5 +1,7 @@
 #!/usr/bin/python
 import argparse
+import webcomic_dl.comic
+import webcomic_dl.extractor.extractor
 p=argparse.ArgumentParser(
 		description="Download a webcomic archive"
 		)
@@ -14,7 +16,7 @@ p.add_argument("-i", "--interval",
 		type=float,
 		help="Minimal interval between downloading each comic, to reduce load on the comic server"
 		)
-p.add_argument("-m", "--max",
+p.add_argument("-n", "--max",
 		dest="max",
 		metavar="n",
 		default=0,

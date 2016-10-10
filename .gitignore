@@ -2,5 +2,7 @@
 __pycache__
 virtualenv
 build
+dist
+*.egg-info
 #because vim
 .*.swp
