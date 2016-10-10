@@ -1,6 +1,10 @@
+import comics.*
 class getComic(url:string):
     """Return a new Comic object for the given url"""
-    pass
+    for c in vars()["Comics"].__subclasses__():
+        if(c.match(url)):
+            return c(url)
+    return Comic(url)
 
 class Comic:
     #the CSS selector for the "next" link
