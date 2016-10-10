@@ -1,8 +1,13 @@
 import re
+def getSite(url):
+    """Return an appropriate Site subclass for the given url"""
+    return Site(url)
+
 class Site:
     regex='https?://.*\..*'
     def match(url:string):
         """Returns whether this Site class will work for the given url"""
+        return re.match(self.regex, url)
 
     first=""
     def __init__(self, url:strig=None):
