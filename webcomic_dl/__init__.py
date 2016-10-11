@@ -2,12 +2,8 @@ import requests
 import re
 from lxml import html
 from lxml.cssselect import CSSSelector
-def getComic(url: str):
-    """Return a new Comic object for the given url"""
-    for c in Comic.__subclasses__():
-        if c.match(url):
-            return c(url)
-    return Comic(url)
+from urllib.parse import urljoin
+__all__=["qc", "xkcd", "smbc"]
 
 class Comic:
     #the CSS selector for the "next" link
@@ -17,8 +13,6 @@ class Comic:
     #the CSS selector for the comic img
     imgSelector=None
     #the CSS selector for supplemental text
-    textSelector=None
-    #the title of the site
     siteTitle=None
     #the default directory name to download into
     defaultDirname="comics"
@@ -27,7 +21,7 @@ class Comic:
     @classmethod
     def match(cls, url:str):
         """Returns whether this Comic class will work for the given URL"""
-        return re.match(cls.urlRegex, url)
+        return re.search(cls.urlRegex, url)
 
     def __init__(self, url:str):
         """Creates a Comic object, downloads and parses the comic page"""
@@ -36,17 +30,20 @@ class Comic:
 
     def _getAttr(self, selector:str, attr:str):
         """Return the value of the given attribute for the first element matching the given selector"""
-        if selector is None:
+        if not selector:
             return ""
         sel=CSSSelector(selector)
-        return sel(self.dom)[0].attrib[attr]
+        attrs=sel(self.dom)[0].attrib
+        if(attr in attrs):
+            return attrs[attr]
+        return ""
 
     def _getText(self, selector:str):
         """Return the text of the first element matching the given selector"""
-        if selector is None:
+        if not selector:
             return ""
         sel=CSSSelector(selector)
-        return sel(self.dom)[0].text
+        return sel(self.dom)[0].text or ""
 
     def getNumber(self):
         """Return the page number"""
@@ -58,27 +55,32 @@ class Comic:
 
     def getImg(self):
         """Return the image URL for this page"""
-        return self._getAttr(self.imgSelector, "src")
+        return urljoin(
+                self.url,
+                self._getAttr(self.imgSelector, "src")
+                )
 
     def getImgExtension(self):
         """Return the filename extension for the image"""
-        return re.match(r'\.([a-zA-Z]+)$', self.getImg()).group(1)
+        return re.search(r'\.([a-zA-Z]+)$', self.getImg()).group(1)
 
     def getImgFile(self):
         """Return the filename to save the image as"""
-        return "{number:06d} {title:s}.{extension:s}".format(number=self.getNumber(), title=self.getTitle(), extension=self.getImgExtension())
+        parts=[str(self.getNumber()).zfill(6)]
+        if(self.getTitle()):
+            parts.append(self.getTitle())
+        return (" - ".join(parts)) + "." + self.getImgExtension()
 
     def getAlt(self):
         """Return the alt text for this comic"""
         return self._getAttr(self.imgSelector, "alt")
 
-    def getText(self):
-        """Return any accompanying text for this comic"""
-        return  self._getText(self.textSelector)
-
     def getNext(self):
         """Return the URL of the next page if there is one, or False otherwise"""
-        return self.getHref(nextSelector)
+        return urljoin(
+                self.url,
+                self.getAttr(self.nextSelector, "href")
+                )
 
     def toDict(self):
         """Returns a dict with all the important stuff"""
@@ -88,6 +90,5 @@ class Comic:
                 "url": self.url,
                 "imgurl": self.getImg(),
                 "imgfile": self.getImgFile(),
-                "alt": self.getAlt(),
-                "text": self.getText()
+                "alt": self.getAlt()
                 }
