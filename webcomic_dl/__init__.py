@@ -28,23 +28,31 @@ class Comic:
         """Creates a Comic object, downloads and parses the comic page"""
         self.dom=html.fromstring(requests.get(url).text)
         self.url=url
+    
+    def _getElement(self, selector:str):
+        if not selector:
+            return None
+        sel=CSSSelector(selector)
+        e=sel(self.dom)
+        if(len(e)):
+            return e[0]
+        return None
 
     def _getAttr(self, selector:str, attr:str):
         """Return the value of the given attribute for the first element matching the given selector"""
-        if not selector:
+        e=self._getElement(selector)
+        if(e is not None and attr in e.attrib):
+            return e.attrib[attr]
+        else:
             return ""
-        sel=CSSSelector(selector)
-        attrs=sel(self.dom)[0].attrib
-        if(attr in attrs):
-            return attrs[attr]
-        return ""
 
     def _getText(self, selector:str):
         """Return the text of the first element matching the given selector"""
-        if not selector:
+        e=self._getElement(selector)
+        if(e is not None):
+            return e.text
+        else:
             return ""
-        sel=CSSSelector(selector)
-        return sel(self.dom)[0].text or ""
 
     def getNumber(self):
         """Return the page number"""
@@ -76,13 +84,24 @@ class Comic:
         """Return the alt text for this comic"""
         return self._getAttr(self.imgSelector, "alt")
 
-    def getNext(self):
+    def getNextURL(self):
         """Return the URL of the next page if there is one, or False otherwise"""
-        return urljoin(
-                self.url,
-                self.getAttr(self.nextSelector, "href")
-                )
+        url=self._getAttr(self.nextSelector, "href")
+        if(url):
+            return urljoin(self.url, url)
+        return None
 
+    def hasNext(self):
+        """Return whether there is another comic after this one"""
+        return self.getNextURL() is not None
+
+    def getNextComic(self):
+        """Return a Comic object corresponding to the next comic"""
+        url=self.getNextURL()
+        if(url is not None):
+            return self.__class__(url)
+        return None
+    
     def toDict(self):
         """Return a dict with all the important stuff"""
         return {
@@ -105,11 +124,9 @@ class Comic:
             return False
         if(os.path.isfile(tmpfile)):
             os.remove(tmpfile)
-        print("opening request")
         r=requests.get(self.getImg(), stream=True)
         with open(tmpfile, "wb") as f:
             for chunk in r.iter_content(chunk_size=1024):
-                print("getting")
                 if(chunk):
                     f.write(chunk)
         os.rename(tmpfile, filename)
