@@ -1,6 +1,6 @@
-import webcomic_dl
+from webcomic_dl import Comic
 import re
-class SmbcComic(webcomic_dl.Comic):
+class SmbcComic(Comic):
     nextSelector="a.next"
     titleSelector="title"
     imgSelector="#cc-comic"

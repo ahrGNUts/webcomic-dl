@@ -1,6 +1,6 @@
-import webcomic_dl
+from webcomic_dl import Comic
 import re
-class XkcdComic(webcomic_dl.Comic):
+class XkcdComic(Comic):
     nextSelector="a[rel=next]"
     titleSelector="#ctitle"
     imgSelector="#comic img"
