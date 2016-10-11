@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import argparse
-from webcomic_dl import comic
+import webcomic_dl
 p=argparse.ArgumentParser(
 		description="Download a webcomic archive"
 		)
@@ -57,4 +57,5 @@ p.add_argument("-m", "--metadata-only",
 		)
 args=p.parse_args()
 
-c=comic.getComic(args.url)
+c=webcomic_dl.getComic(args.url)
+print(c.toDict())
