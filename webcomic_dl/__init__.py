@@ -84,7 +84,7 @@ class Comic:
                 )
 
     def toDict(self):
-        """Returns a dict with all the important stuff"""
+        """Return a dict with all the important stuff"""
         return {
                 "number": self.getNumber(),
                 "title": self.getTitle(),
@@ -95,18 +95,21 @@ class Comic:
                 }
 
     def downloadImg(self, dirname:str=None, overwrite=False):
+        """Download the image, saving it in the specified directory. Saves under a different name and then moves it, to improve integrity"""
         d=dirname or self.defaultDirname
         if(not os.path.isdir(d)):
             os.mkdir(d)
         filename=os.path.join(d, self.getImgFilename())
-        tmpfile=os.path.join(d, "tmp-"+self.getImgFilename())
+        tmpfile=os.path.join(d, self.getImgFilename()+".incomplete")
         if(not overwrite and os.path.isfile(filename)):
-            return false
+            return False
         if(os.path.isfile(tmpfile)):
             os.remove(tmpfile)
+        print("opening request")
         r=requests.get(self.getImg(), stream=True)
         with open(tmpfile, "wb") as f:
             for chunk in r.iter_content(chunk_size=1024):
+                print("getting")
                 if(chunk):
                     f.write(chunk)
         os.rename(tmpfile, filename)
