@@ -3,7 +3,6 @@ import re
 from lxml import html
 from lxml.cssselect import CSSSelector
 from urllib.parse import urljoin
-__all__=["qc", "xkcd", "smbc"]
 
 class Comic:
     #the CSS selector for the "next" link

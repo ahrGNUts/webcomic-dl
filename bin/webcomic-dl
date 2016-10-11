@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import argparse
 import webcomic_dl
-from webcomic_dl import *
+from webcomic_dl.comics import *
 print(webcomic_dl)
 def getArgs():
 	p=argparse.ArgumentParser(
