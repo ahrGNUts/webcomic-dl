@@ -1,8 +1,8 @@
-import comics.*
-class getComic(url:string):
+from webcomic_dl.comics import *
+def getComic(url: str):
     """Return a new Comic object for the given url"""
     for c in vars()["Comics"].__subclasses__():
-        if(c.match(url)):
+        if c.match(url):
             return c(url)
     return Comic(url)
 
@@ -22,19 +22,19 @@ class Comic:
     #the regex for matching the URL to the Comic
     urlRegex=".*"
     @classmethod
-    def match(cls, url:string):
+    def match(cls, url:str):
         """Returns whether this Comic class will work for the given URL"""
         return re.match(cls.urlRegex, url)
     
-    def __init__(self, url:string):
+    def __init__(self, url:str):
         """Creates a Comic object, downloads and parses the comic page"""
         self.url=url
         self.dom=None
 
-    def getText(self, selector:string):
+    def getText(self, selector:str):
         """Return the text of the first element matching the given selector"""
 
-    def getAttr(self, selector:string, attr:string):
+    def getAttr(self, selector:str, attr:str):
         """Return the value of the given attribute for the first element matching the given selector"""
 
     def getNext(self):
