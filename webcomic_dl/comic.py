@@ -1,4 +1,7 @@
 from webcomic_dl.comics import *
+import requests
+from lxml import html
+from lxml.cssselect import CSSSelector
 def getComic(url: str):
     """Return a new Comic object for the given url"""
     for c in vars()["Comics"].__subclasses__():
@@ -28,14 +31,22 @@ class Comic:
 
     def __init__(self, url:str):
         """Creates a Comic object, downloads and parses the comic page"""
+        self.dom=html.fromstring(requests.get(url).text)
         self.url=url
-        self.dom=None
-
-    def _getText(self, selector:str):
-        """Return the text of the first element matching the given selector"""
 
     def _getAttr(self, selector:str, attr:str):
         """Return the value of the given attribute for the first element matching the given selector"""
+        if selector is None:
+            return ""
+        sel=CSSSelector(selector)
+        return sel(self.dom)[0].attrib[attr]
+
+    def _getText(self, selector:str):
+        """Return the text of the first element matching the given selector"""
+        if selector is None:
+            return ""
+        sel=CSSSelector(selector)
+        return sel(self.dom)[0].text
 
     def getNumber(self):
         """Return the page number"""
