@@ -25,21 +25,17 @@ class Comic:
     def match(cls, url:str):
         """Returns whether this Comic class will work for the given URL"""
         return re.match(cls.urlRegex, url)
-    
+
     def __init__(self, url:str):
         """Creates a Comic object, downloads and parses the comic page"""
         self.url=url
         self.dom=None
 
-    def getText(self, selector:str):
+    def _getText(self, selector:str):
         """Return the text of the first element matching the given selector"""
 
-    def getAttr(self, selector:str, attr:str):
+    def _getAttr(self, selector:str, attr:str):
         """Return the value of the given attribute for the first element matching the given selector"""
-
-    def getNext(self):
-        """Return the URL of the next page if there is one, or False otherwise"""
-        return self.getHref(nextSelector)
 
     def getNumber(self):
         """Return the page number"""
@@ -51,12 +47,36 @@ class Comic:
 
     def getImg(self):
         """Return the image URL for this page"""
-        return self.getAttr(self.imgSelector, "src")
+        return self._getAttr(self.imgSelector, "src")
+
+    def getImgExtension(self):
+        """Return the filename extension for the image"""
+        return re.match(r'\.([a-zA-Z]+$', self.getImg()).group(1)
+
+    def getImgFile(self):
+        """Return the filename to save the image as"""
+        return "{number:06d} {title:s}.{extension:s}".format(number=self.getNumber(), title=self.getTitle(), extension=self.getExtension())
 
     def getAlt(self):
         """Return the alt text for this comic"""
-        return self.getAttr(self.imgSelector, "alt")
+        return self._getAttr(self.imgSelector, "alt")
 
-    def getAccompanyingText(self):
+    def getText(self):
         """Return any accompanying text for this comic"""
-        return  getText(self.textSelector)
+        return  self._getText(self.textSelector)
+
+    def getNext(self):
+        """Return the URL of the next page if there is one, or False otherwise"""
+        return self.getHref(nextSelector)
+
+    def toDict(self):
+        """Returns a dict with all the important stuff"""
+        return {
+                "number": self.getNumber(),
+                "title": self.getTitle(),
+                "url": self.url,
+                "imgurl": self.getImg(),
+                "imgfile": self.getImgFile(),
+                "alt": self.getAlt(),
+                "text": self.getText()
+                }

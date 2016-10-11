@@ -1,20 +1,32 @@
 #!/usr/bin/python
 import argparse
-import webcomic_dl.comic
+from webcomic_dl import comic
 p=argparse.ArgumentParser(
 		description="Download a webcomic archive"
 		)
 p.add_argument("url",
 		help="the URL of the comic to start from"
 		)
+'''
 p.add_argument("-i", "--interval",
 		dest="interval",
 		metavar="seconds",
 		nargs=1,
 		default=2,
 		type=float,
-		help="Minimal interval between downloading each comic, to reduce load on the comic server"
+		help="Minimal interval between downloading each comic, to reduce load on the comic server (not yet implemented)"
 		)
+'''
+'''
+p.add_argument("-t", "--threads",
+		dest="threads",
+		metavar="n",
+		nargs=1,
+		default=1,
+		type=int,
+		help="Maximum number of simultaneous downloads (not yet implemented)"
+		)
+'''
 p.add_argument("-n", "--max",
 		dest="max",
 		metavar="n",
@@ -31,7 +43,7 @@ p.add_argument("-o", "--out",
 p.add_argument("-O", "--overwrite",
 		dest="overwrite",
 		action="store_true",
-		help="Force overwriting of downloaded comics. By default, webcomic-dl will not re-download already-downloaded comics."
+		help="Force overwriting of downloaded comics. By default, webcomic-dl will not overwrite already-downloaded comics."
 		)
 p.add_argument("-f", "--file",
 		dest="file",
@@ -44,3 +56,5 @@ p.add_argument("-m", "--metadata-only",
 		help="Don't download comics, just metadata"
 		)
 args=p.parse_args()
+
+c=comic.getComic(args.url)
