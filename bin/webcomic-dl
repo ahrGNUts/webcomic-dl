@@ -2,6 +2,7 @@
 import webcomic_dl
 from webcomic_dl.comics import *
 from webcomic_dl import cli, Comic
+import requests
 print(webcomic_dl)
 def getComic(url):
 	for c in Comic.__subclasses__():
@@ -11,4 +12,4 @@ def getComic(url):
 			return c(args.url)
 
 args=cli.getArgs()
-print(getComic(args.url).toDict())
+print(getComic(args.url).downloadImg())

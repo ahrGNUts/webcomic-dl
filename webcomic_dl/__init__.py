@@ -3,6 +3,8 @@ import re
 from lxml import html
 from lxml.cssselect import CSSSelector
 from urllib.parse import urljoin
+import os.path
+import os
 
 class Comic:
     #the CSS selector for the "next" link
@@ -63,7 +65,7 @@ class Comic:
         """Return the filename extension for the image"""
         return re.search(r'\.([a-zA-Z]+)$', self.getImg()).group(1)
 
-    def getImgFile(self):
+    def getImgFilename(self):
         """Return the filename to save the image as"""
         parts=[str(self.getNumber()).zfill(6)]
         if(self.getTitle()):
@@ -88,6 +90,24 @@ class Comic:
                 "title": self.getTitle(),
                 "url": self.url,
                 "imgurl": self.getImg(),
-                "imgfile": self.getImgFile(),
+                "imgfile": self.getImgFilename(),
                 "alt": self.getAlt()
                 }
+
+    def downloadImg(self, dirname:str=None, overwrite=False):
+        d=dirname or self.defaultDirname
+        if(not os.path.isdir(d)):
+            os.mkdir(d)
+        filename=os.path.join(d, self.getImgFilename())
+        tmpfile=os.path.join(d, "tmp-"+self.getImgFilename())
+        if(not overwrite and os.path.isfile(filename)):
+            return false
+        if(os.path.isfile(tmpfile)):
+            os.remove(tmpfile)
+        r=requests.get(self.getImg(), stream=True)
+        with open(tmpfile, "wb") as f:
+            for chunk in r.iter_content(chunk_size=1024):
+                if(chunk):
+                    f.write(chunk)
+        os.rename(tmpfile, filename)
+        return filename
