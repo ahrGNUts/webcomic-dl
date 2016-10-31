@@ -89,7 +89,7 @@ class Comic:
     def _getElement(self, selector:str, dom=None):
         """Return the first element matching the given selector"""
         e=self._getElements(selector, dom)
-        if(len(e)):
+        if(e is not None and len(e)):
             return e[0]
         return None
 
