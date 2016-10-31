@@ -8,30 +8,69 @@ import os
 import json
 
 def getComicClass(comic):
+    """Return the class appropriate for a given comic name or URL"""
     for c in Comic.__subclasses__():
         if(c.match(args.comic)):
             print("using {0} downloader".format(c.__name__))
             return c
 
+def getMetafile(dir):
+    return os.path.join(dir, "info.json")
+
+def getTmpMetafile(dir):
+    return os.path.join(dir, ".info.json.tmp")
+
+def getMeta(dir):
+    """Return a dict containing the metadata for this comic"""
+    metaFile=getMetafile(dir)
+    if(os.path.isfile(metaFile)):
+        with open(metaFile, "r") as f:
+            return json.loads(f.read())
+    return {}
+
+def saveMeta(dir:str, meta:str, pretty:bool=False):
+    """Save the metadata dict atomically"""
+    metaFile=getMetafile(dir)
+    tmpfile=getTmpMetafile(dir)
+    with open(tmpfile, "w") as f:
+        if(pretty):
+            string=json.dumps(meta, sort_keys=True, indent=4, separators=(",", ": "))
+        else:
+            string=json.dumps(meta)
+        f.write(string)
+    if(os.path.isfile(tmpfile)):
+        os.rename(tmpfile, metaFile)
+
+def getMetaItem(meta, n):
+    key="{0}".format(n)
+    if(not key in meta):
+        return None
+    return meta[key]
+
+def addMetaItem(meta, n, item):
+    meta["{0}".format(n)]=item
 
 args=cli.getArgs()
 print(args)
-
 cls=getComicClass(args.comic)
 dir=args.dir or cls.defaultDirname
-progressFile=os.path.join(dir, ".progress")
 
-if(args.resume and os.path.isfile(progressFile)):
-    with open(progressFile, "r") as f:
-        progress=json.loads(f.read())
-        comic=getComicClass(args.comic)(progress["url"], progress["num"]).getNextComic()
-elif(args.fromURL):
+meta=getMeta(dir)
+
+if(args.fromURL):
     comic=cls(args.comic)
 else:
     comic=cls(cls.first)
+
 while comic:
-    print("Downloading {0}".format(comic.getImgFilename()))
-    comic.downloadImg(args.dir, args.overwrite)
-    comic.saveProgress(args.dir)
-    comic=comic.getNextComic()
+    n=comic.getNumber()
+    if(not getMetaItem(meta, n)):
+        print("Downloading image   {0}".format(comic.getImgFilename()))
+        comic.load()
+        comic.downloadImg(args.dir, args.overwrite)
+        addMetaItem(meta, n, comic.toDict())
+        saveMeta(dir, meta, args.pretty)
+    nextMeta=getMetaItem(meta, n+1)
+    nextURL=None if nextMeta is None else nextMeta["url"]
+    comic=comic.getNextComic(nextURL)
 print("Done!")

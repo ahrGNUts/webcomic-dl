@@ -45,4 +45,9 @@ def getArgs():
             action="store_true",
             help="Don't download comics, just metadata"
             )
+    p.add_argument("-p", "--pretty",
+            dest="pretty",
+            action="store_true",
+            help="saves metadata JSON pretty-printed"
+            )
     return p.parse_args()

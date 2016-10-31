@@ -43,6 +43,11 @@ class Comic:
     performing the checks and establishing the link, they should unset this
     field.
     """
+    
+    dom=None
+    """
+    The DOM of the webpage for this comic
+    """
     @classmethod
     def match(cls, s:str):
         """Returns whether this Comic class will work for the given URL"""
@@ -60,12 +65,18 @@ class Comic:
     def __init__(self, url:str=None, number:int=1, floating:bool=True):
         """Creates a Comic object, downloads and parses the comic page"""
         self.url=self.match(url)
-        self.dom=self.getDOM(self.url)
         self.floating = floating and (self.url!=self.first) #if the URL points to the first comic, it's not "floating"
         self.number=number
     
+    def load(self):
+        """Downloads the webpage. Prett important for most of the stuff in this class"""
+        if(self.dom is None):
+            print("downloading webpage {0}".format(self.url))
+            self.dom=self.getDOM(self.url)
+
     def _getElements(self, selector:str, dom=None):
         """Return all elements matching the given selector"""
+        self.load()
         d=dom if(dom is not None) else self.dom
         if not selector:
             return None
@@ -142,9 +153,9 @@ class Comic:
         """Return whether there is another comic after this one"""
         return self.getNextURL() is not None
 
-    def getNextComic(self):
+    def getNextComic(self, url:str=None):
         """Return a Comic object corresponding to the next comic"""
-        url=self.getNextURL()
+        url=url or self.getNextURL()
         if(url is not None):
             return self.__class__(
                     url      = url,
@@ -186,16 +197,3 @@ class Comic:
         if(os.path.isfile(tmpfile)):
             os.rename(tmpfile, filename)
         return filename
-    
-    def saveProgress(self, dirname:str=None):
-        """Save where we've left off"""
-        d=self.dir(dirname)
-        tmpfile=os.path.join(d, ".progress.tmp")
-        filename=os.path.join(d, ".progress")
-        with open(tmpfile, "w") as f:
-            f.write(json.dumps({
-                "url": self.url,
-                "num": self.getNumber()
-                }))
-        if(os.path.isfile(tmpfile)):
-            os.rename(tmpfile, filename)

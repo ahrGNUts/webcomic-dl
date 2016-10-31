@@ -16,6 +16,7 @@ class SmbcComic(Comic):
 
     def getNumber(self):
         if(self.floating):
+            print("downloading index")
             dom=self.getDOM("http://smbc-comics.com/comic/archive")
             elements=self._getElements("select[name='comic'] > option", dom)
             for i, e in enumerate(elements):
