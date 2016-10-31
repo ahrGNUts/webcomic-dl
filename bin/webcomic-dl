@@ -42,16 +42,15 @@ def saveMeta(dir:str, meta:str, pretty:bool=False):
         os.rename(tmpfile, metaFile)
 
 def getMetaItem(meta, n):
-    key="{0}".format(n)
+    key="{0}".format(n).zfill(6)
     if(not key in meta):
         return None
     return meta[key]
 
 def addMetaItem(meta, n, item):
-    meta["{0}".format(n)]=item
+    meta["{0}".format(n).zfill(6)]=item
 
 args=cli.getArgs()
-print(args)
 cls=getComicClass(args.comic)
 dir=args.dir or cls.defaultDirname
 
@@ -64,10 +63,9 @@ else:
 
 while comic:
     n=comic.getNumber()
-    if(not getMetaItem(meta, n)):
-        print("Downloading image   {0}".format(comic.getImgFilename()))
+    if((not args.resume) or (not getMetaItem(meta, n))):
         comic.load()
-        comic.downloadImg(args.dir, args.overwrite)
+        comic.download(args.dir, args.overwrite)
         addMetaItem(meta, n, comic.toDict())
         saveMeta(dir, meta, args.pretty)
     nextMeta=getMetaItem(meta, n+1)

@@ -14,6 +14,8 @@ class Comic:
     """the CSS selector for the comic title"""
     imgSelector=None
     """the CSS selector for the comic img"""
+    bonusSelector=None
+    """the CSS selector for the bonus img"""
     siteTitle=None
     """the CSS selector for supplemental text"""
     defaultDirname="comics"
@@ -127,16 +129,29 @@ class Comic:
                 self._getAttr(self.imgSelector, "src")
                 )
 
-    def getImgExtension(self):
+    def getImgExtension(self, img=None):
         """Return the filename extension for the image"""
-        return re.search(r'\.([a-zA-Z]+)$', self.getImg()).group(1)
+        i=img or self.getImg()
+        return re.search(r'\.([a-zA-Z]+)$', i).group(1)
 
-    def getImgFilename(self):
+    def getImgFilename(self, suffix:str="", extension:str=None):
         """Return the filename to save the image as"""
+        ext=extension or self.getImgExtension()
         parts=[str(self.getNumber()).zfill(6)]
         if(self.getTitle()):
             parts.append(self.getTitle())
-        return (" - ".join(parts)) + "." + self.getImgExtension()
+        return (" - ".join(parts)) + suffix + "." + ext
+
+    def getBonusImg(self):
+        if(self.bonusSelector):
+            return self._getAttr(self.bonusSelector, "src")
+        return None
+        
+    def getBonusImgFilename(self):
+        img=self.getBonusImg()
+        if(img):
+            return self.getImgFilename(".bonus", self.getImgExtension(img))
+        return None
 
     def getAlt(self):
         """Return the alt text for this comic"""
@@ -166,12 +181,11 @@ class Comic:
     def toDict(self):
         """Return a dict with all the important stuff"""
         return {
-                "number": self.getNumber(),
                 "title": self.getTitle(),
                 "url": self.url,
-                "imgurl": self.getImg(),
-                "imgfile": self.getImgFilename(),
-                "alt": self.getAlt()
+                "img": self.getImgFilename(),
+                "alt": self.getAlt(),
+                "bonus": self.getBonusImgFilename()
                 }
     
     def dir(self, dirname:str=None):
@@ -180,16 +194,29 @@ class Comic:
             os.mkdir(d)
         return d
 
-    def downloadImg(self, dirname:str=None, overwrite=False):
+    def download(self, dirname:str=None, overwrite=False):
         """Download the image, saving it in the specified directory. Saves under a different name and then moves it, to improve integrity"""
         d=self.dir(dirname)
-        filename=os.path.join(d, self.getImgFilename())
-        tmpfile=os.path.join(d, self.getImgFilename()+".incomplete")
+        self.downloadImage(
+                os.path.join(d, self.getImgFilename()),
+                self.getImg(),
+                overwrite
+                )
+        if(self.getBonusImg()):
+            self.downloadImage(
+                    os.path.join(d, self.getBonusImgFilename()),
+                    self.getBonusImg(),
+                    overwrite
+                    )
+
+    def downloadImage(self, filename:str, url:str, overwrite=False):
+        tmpfile=filename+".incomplete"
         if(not overwrite and os.path.isfile(filename)):
             return False
         if(os.path.isfile(tmpfile)):
             os.remove(tmpfile)
-        r=requests.get(self.getImg(), stream=True)
+        print("Downloading image   {0}".format(filename))
+        r=requests.get(url, stream=True)
         with open(tmpfile, "wb") as f:
             for chunk in r.iter_content(chunk_size=1024):
                 if(chunk):

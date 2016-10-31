@@ -4,6 +4,7 @@ class SmbcComic(Comic):
     nextSelector="a.next"
     titleSelector="title"
     imgSelector="#cc-comic"
+    bonusSelector="#aftercomic > img"
     siteTitle="Saturday Morning Breakfast Cereal"
     defaultDirname="SMBC"
     urlRegex="^https?://(?:www\.)?smbc-comics\.com(?:/|$)"
@@ -11,7 +12,6 @@ class SmbcComic(Comic):
     first="http://www.smbc-comics.com/comic/2002-09-05"
 
     def getTitle(self):
-        return self._getText("title")
         return re.search(r'^Saturday Morning Breakfast Cereal - (.*)$', self._getText("title")).groups(1)[0]
 
     def getNumber(self):
