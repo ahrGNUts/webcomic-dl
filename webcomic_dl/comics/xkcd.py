@@ -7,5 +7,7 @@ class XkcdComic(Comic):
     siteTitle="xkcd"
     defaultDirname="xkcd"
     urlRegex="^https?://xkcd\.com(?:/|$)"
+    name="xkcd"
+    first="https://xkcd.com/1"
     def getNumber(self):
         return int(re.search(r'\d+', self.url).group(0))

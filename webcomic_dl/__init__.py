@@ -20,18 +20,26 @@ class Comic:
     defaultDirname="comics"
     #the regex for matching the URL to the Comic
     urlRegex=".*"
+    #comic name
+    name=""
+    #url of first comic
+    first=""
     #headers to use for the request
     headers={}
     @classmethod
-    def match(cls, url:str):
+    def match(cls, s:str):
         """Returns whether this Comic class will work for the given URL"""
-        return re.search(cls.urlRegex, url)
+        if s==cls.name:
+            return cls.first
+        elif re.search(cls.urlRegex, s):
+            return s
+        return False
 
-    def __init__(self, url:str, number:int=1):
+    def __init__(self, url:str=None, number:int=1):
         """Creates a Comic object, downloads and parses the comic page"""
-        txt=requests.get(url, headers=self.headers).text
+        self.url=url or self.first
+        txt=requests.get(self.url, headers=self.headers).text
         self.dom=html.fromstring(txt)
-        self.url=url
         self.number=number
     
     def _getElement(self, selector:str):

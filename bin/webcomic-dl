@@ -3,16 +3,18 @@ import webcomic_dl
 from webcomic_dl.comics import *
 from webcomic_dl import cli, Comic
 import requests
-print(webcomic_dl)
+
 def getComic(url):
     for c in Comic.__subclasses__():
         print("trying " + c.__name__)
-        if c.match(args.url):
+        url=c.match(args.comic)
+        print(url)
+        if(url):
             print("using " + c.__name__)
-            return c(args.url)
+            return c(url)
 
 args=cli.getArgs()
-comic=getComic(args.url)
+comic=getComic(args.comic)
 while comic:
     print("Downloading {0}".format(comic.getImgFilename()))
     comic.downloadImg()

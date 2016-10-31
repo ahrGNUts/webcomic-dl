@@ -7,5 +7,7 @@ class QuestionableContentComic(Comic):
     siteTitle="Questionable Content"
     defaultDirname="Questionable Content"
     urlRegex="^https?://(?:www\.)?questionablecontent\.net(?:/|$)"
+    name="questionable-content"
+    first="https://questionablecontent.net/view.php?comic=1"
     def getNumber(self):
         return int(re.search(r'comic=(\d+)', self.url).group(1))
