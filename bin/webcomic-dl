@@ -14,10 +14,11 @@ def getComic(url):
             return c(url)
 
 args=cli.getArgs()
+print(args)
 comic=getComic(args.comic)
 while comic:
     print("Downloading {0}".format(comic.getImgFilename()))
-    comic.downloadImg()
-    comic.saveProgress()
+    comic.downloadImg(args.dir, args.overwrite)
+    comic.saveProgress(args.dir)
     comic=comic.getNextComic()
 print("Done!")
