@@ -11,6 +11,3 @@ class SmbcComic(Comic):
     def getTitle(self):
         return self._getText("title")
         return re.search(r'^Saturday Morning Breakfast Cereal - (.*)$', self._getText("title")).groups(1)[0]
-
-    def getNumber(self):
-        return 1

@@ -24,10 +24,12 @@ class Comic:
         """Returns whether this Comic class will work for the given URL"""
         return re.search(cls.urlRegex, url)
 
-    def __init__(self, url:str):
+    def __init__(self, url:str, number:int=1):
         """Creates a Comic object, downloads and parses the comic page"""
-        self.dom=html.fromstring(requests.get(url).text)
+        txt=requests.get(url).text
+        self.dom=html.fromstring(txt)
         self.url=url
+        self.number=number
     
     def _getElement(self, selector:str):
         if not selector:
@@ -55,8 +57,13 @@ class Comic:
             return ""
 
     def getNumber(self):
-        """Return the page number"""
-        return 0
+        """
+        Return the page number
+        
+        Most subclasses will want to override this with something that extracts
+        the number from the webpage or URL
+        """
+        return self.number
 
     def getTitle(self):
         """Return the title of this comic"""
@@ -99,7 +106,7 @@ class Comic:
         """Return a Comic object corresponding to the next comic"""
         url=self.getNextURL()
         if(url is not None):
-            return self.__class__(url)
+            return self.__class__(url, None if self.number is None else self.number+1)
         return None
     
     def toDict(self):
