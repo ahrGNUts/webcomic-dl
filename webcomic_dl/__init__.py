@@ -8,24 +8,41 @@ import os
 import json
 
 class Comic:
-    #the CSS selector for the "next" link
     nextSelector=None
-    #the CSS selector for the comic title
+    """the CSS selector for the "next" link"""
     titleSelector=None
-    #the CSS selector for the comic img
+    """the CSS selector for the comic title"""
     imgSelector=None
-    #the CSS selector for supplemental text
+    """the CSS selector for the comic img"""
     siteTitle=None
-    #the default directory name to download into
+    """the CSS selector for supplemental text"""
     defaultDirname="comics"
-    #the regex for matching the URL to the Comic
+    """the default directory name to download into"""
+
     urlRegex=".*"
-    #comic name
+    """the regex for matching the URL to the Comic"""
+
     name=""
-    #url of first comic
+    """Name of the comic"""
+
     first=""
-    #headers to use for the request
+    """URL of first comic"""
+
     headers={}
+    """
+    Specifies headers to use for all the web requests.
+
+    May be used in the future for authentication or useragent strings.
+    """
+
+    floating=True
+    """
+    Keeps track of whether anything links the number field to the canonical
+    numbering scheme of the comic. Subclasses should check this in getNumber(),
+    and only perform expensive checks on numbering if this field is True. After
+    performing the checks and establishing the link, they should unset this
+    field.
+    """
     @classmethod
     def match(cls, s:str):
         """Returns whether this Comic class will work for the given URL"""
@@ -34,34 +51,46 @@ class Comic:
         elif re.search(cls.urlRegex, s):
             return s
         return False
+    @classmethod
+    def getDOM(cls, url:str):
+        """Returns a parsed DOM of the webpage of a URL"""
+        txt=requests.get(url, headers=cls.headers).text
+        return html.fromstring(txt)
 
-    def __init__(self, url:str=None, number:int=1):
+    def __init__(self, url:str=None, number:int=1, floating:bool=True):
         """Creates a Comic object, downloads and parses the comic page"""
-        self.url=self.__class__.match(url)
-        txt=requests.get(self.url, headers=self.headers).text
-        self.dom=html.fromstring(txt)
+        self.url=self.match(url)
+        self.dom=self.getDOM(self.url)
+        self.floating = floating and (self.url!=self.first) #if the URL points to the first comic, it's not "floating"
         self.number=number
     
-    def _getElement(self, selector:str):
+    def _getElements(self, selector:str, dom=None):
+        """Return all elements matching the given selector"""
+        d=dom if(dom is not None) else self.dom
         if not selector:
             return None
         sel=CSSSelector(selector)
-        e=sel(self.dom)
+        e=sel(d)
+        return e
+
+    def _getElement(self, selector:str, dom=None):
+        """Return the first element matching the given selector"""
+        e=self._getElements(selector, dom)
         if(len(e)):
             return e[0]
         return None
 
-    def _getAttr(self, selector:str, attr:str):
+    def _getAttr(self, selector:str, attr:str, dom=None):
         """Return the value of the given attribute for the first element matching the given selector"""
-        e=self._getElement(selector)
+        e=self._getElement(selector, dom)
         if(e is not None and attr in e.attrib):
             return e.attrib[attr]
         else:
             return ""
 
-    def _getText(self, selector:str):
+    def _getText(self, selector:str, dom=None):
         """Return the text of the first element matching the given selector"""
-        e=self._getElement(selector)
+        e=self._getElement(selector, dom)
         if(e is not None):
             return e.text
         else:
@@ -117,7 +146,10 @@ class Comic:
         """Return a Comic object corresponding to the next comic"""
         url=self.getNextURL()
         if(url is not None):
-            return self.__class__(url, None if self.number is None else self.number+1)
+            return self.__class__(
+                    url      = url,
+                    number   = None if self.number is None else self.number+1,
+                    floating = self.floating)
         return None
     
     def toDict(self):

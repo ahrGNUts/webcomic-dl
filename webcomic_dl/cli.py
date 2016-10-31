@@ -15,7 +15,7 @@ def getArgs():
             help="Maximum number of comics to download. 0 means unlimited"
             )
     p.add_argument("-f", "--from-url",
-            dest="from",
+            dest="fromURL",
             action="store_true",
             help="By default, webcomic-dl will download from the first webcomic in the series, regardless of the URL. This flag overrides it. For some comics that don't have numbers associated with their comics, this may cause naming collisions if you later decide to go back and download older comics. Thus, only use this if you are either certain you will never want earlier comics, or are willing to re-download the newer ones."
             )

@@ -17,16 +17,18 @@ def getComicClass(comic):
 args=cli.getArgs()
 print(args)
 
-comicDir=args.dir or getComicClass(args.comic).defaultDirname
-progressFile=os.path.join(comicDir, ".progress")
+cls=getComicClass(args.comic)
+dir=args.dir or cls.defaultDirname
+progressFile=os.path.join(dir, ".progress")
 
 if(args.resume and os.path.isfile(progressFile)):
     with open(progressFile, "r") as f:
         progress=json.loads(f.read())
         comic=getComicClass(args.comic)(progress["url"], progress["num"]).getNextComic()
+elif(args.fromURL):
+    comic=cls(args.comic)
 else:
-    comic=getComicClass(args.comic)(args.comic)
-
+    comic=cls(cls.first)
 while comic:
     print("Downloading {0}".format(comic.getImgFilename()))
     comic.downloadImg(args.dir, args.overwrite)
