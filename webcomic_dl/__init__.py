@@ -19,6 +19,8 @@ class Comic:
     defaultDirname="comics"
     #the regex for matching the URL to the Comic
     urlRegex=".*"
+    #headers to use for the request
+    headers={}
     @classmethod
     def match(cls, url:str):
         """Returns whether this Comic class will work for the given URL"""
@@ -26,7 +28,7 @@ class Comic:
 
     def __init__(self, url:str, number:int=1):
         """Creates a Comic object, downloads and parses the comic page"""
-        txt=requests.get(url).text
+        txt=requests.get(url, headers=headers).text
         self.dom=html.fromstring(txt)
         self.url=url
         self.number=number
