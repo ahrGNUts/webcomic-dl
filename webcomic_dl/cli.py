@@ -5,28 +5,8 @@ def getArgs():
 			description="Download a webcomic archive"
 			)
 	p.add_argument("url",
-			help="the URL of the comic to start from"
+			help="the URL of the webcomic to comic download"
 			)
-	'''
-	p.add_argument("-i", "--interval",
-			dest="interval",
-			metavar="seconds",
-			nargs=1,
-			default=2,
-			type=float,
-			help="Minimal interval between downloading each comic, to reduce load on the comic server (not yet implemented)"
-			)
-	'''
-	'''
-	p.add_argument("-t", "--threads",
-			dest="threads",
-			metavar="n",
-			nargs=1,
-			default=1,
-			type=int,
-			help="Maximum number of simultaneous downloads (not yet implemented)"
-			)
-	'''
 	p.add_argument("-n", "--max",
 			dest="max",
 			metavar="n",
@@ -34,17 +14,21 @@ def getArgs():
 			type=int,
 			help="Maximum number of comics to download. 0 means unlimited"
 			)
-	p.add_argument("-o", "--out",
+	p.add_argument("-d", "--dir",
 			dest="dir",
 			metavar="dir",
 			default="",
 			help="Specify an output directory"
 			)
-	p.add_argument("-O", "--overwrite",
+	p.add_argument("-o", "--overwrite",
 			dest="overwrite",
 			action="store_true",
 			help="Force overwriting of downloaded comics. By default, webcomic-dl will not overwrite already-downloaded comics."
 			)
+        p.add_argument("-n", "--no-resume",
+                        dest="resume",
+                        action="store_false",
+                        help="By default, webcomic-dl will resume downloads from where it last left off. This flag overrides it. Still does not download already-downloaded comics unless combined with -o."
 	p.add_argument("-f", "--file",
 			dest="file",
 			help="Specify where to save metadata. By default it is saved in <output_dir>/info.json",
