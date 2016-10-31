@@ -3,19 +3,30 @@ import webcomic_dl
 from webcomic_dl.comics import *
 from webcomic_dl import cli, Comic
 import requests
+import os.path
+import os
+import json
 
-def getComic(url):
+def getComicClass(comic):
     for c in Comic.__subclasses__():
-        print("trying " + c.__name__)
-        url=c.match(args.comic)
-        print(url)
-        if(url):
-            print("using " + c.__name__)
-            return c(url)
+        if(c.match(args.comic)):
+            print("using {0} downloader".format(c.__name__))
+            return c
+
 
 args=cli.getArgs()
 print(args)
-comic=getComic(args.comic)
+
+comicDir=args.dir or getComicClass(args.comic).defaultDirname
+progressFile=os.path.join(comicDir, ".progress")
+
+if(args.resume and os.path.isfile(progressFile)):
+    with open(progressFile, "r") as f:
+        progress=json.loads(f.read())
+        comic=getComicClass(args.comic)(progress["url"], progress["num"]).getNextComic()
+else:
+    comic=getComicClass(args.comic)(args.comic)
+
 while comic:
     print("Downloading {0}".format(comic.getImgFilename()))
     comic.downloadImg(args.dir, args.overwrite)

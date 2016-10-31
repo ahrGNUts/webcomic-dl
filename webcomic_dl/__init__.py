@@ -37,7 +37,7 @@ class Comic:
 
     def __init__(self, url:str=None, number:int=1):
         """Creates a Comic object, downloads and parses the comic page"""
-        self.url=url or self.first
+        self.url=self.__class__.match(url)
         txt=requests.get(self.url, headers=self.headers).text
         self.dom=html.fromstring(txt)
         self.number=number
