@@ -5,16 +5,17 @@ from webcomic_dl import cli, Comic
 import requests
 print(webcomic_dl)
 def getComic(url):
-	for c in Comic.__subclasses__():
-		print("trying " + c.__name__)
-		if c.match(args.url):
-			print("using " + c.__name__)
-			return c(args.url)
+    for c in Comic.__subclasses__():
+        print("trying " + c.__name__)
+        if c.match(args.url):
+            print("using " + c.__name__)
+            return c(args.url)
 
 args=cli.getArgs()
 comic=getComic(args.url)
 while comic:
-	print("Downloading {0}".format(comic.getImgFilename()))
-	comic.downloadImg()
-	comic=comic.getNextComic()
+    print("Downloading {0}".format(comic.getImgFilename()))
+    comic.downloadImg()
+    comic.saveProgress()
+    comic=comic.getNextComic()
 print("Done!")

@@ -5,6 +5,7 @@ from lxml.cssselect import CSSSelector
 from urllib.parse import urljoin
 import os.path
 import os
+import json
 
 class Comic:
     #the CSS selector for the "next" link
@@ -28,7 +29,7 @@ class Comic:
 
     def __init__(self, url:str, number:int=1):
         """Creates a Comic object, downloads and parses the comic page"""
-        txt=requests.get(url, headers=headers).text
+        txt=requests.get(url, headers=self.headers).text
         self.dom=html.fromstring(txt)
         self.url=url
         self.number=number
@@ -121,12 +122,16 @@ class Comic:
                 "imgfile": self.getImgFilename(),
                 "alt": self.getAlt()
                 }
-
-    def downloadImg(self, dirname:str=None, overwrite=False):
-        """Download the image, saving it in the specified directory. Saves under a different name and then moves it, to improve integrity"""
+    
+    def dir(self, dirname:str=None):
         d=dirname or self.defaultDirname
         if(not os.path.isdir(d)):
             os.mkdir(d)
+        return d
+
+    def downloadImg(self, dirname:str=None, overwrite=False):
+        """Download the image, saving it in the specified directory. Saves under a different name and then moves it, to improve integrity"""
+        d=self.dir(dirname)
         filename=os.path.join(d, self.getImgFilename())
         tmpfile=os.path.join(d, self.getImgFilename()+".incomplete")
         if(not overwrite and os.path.isfile(filename)):
@@ -138,5 +143,19 @@ class Comic:
             for chunk in r.iter_content(chunk_size=1024):
                 if(chunk):
                     f.write(chunk)
-        os.rename(tmpfile, filename)
+        if(os.path.isfile(tmpfile)):
+            os.rename(tmpfile, filename)
         return filename
+    
+    def saveProgress(self, dirname:str=None):
+        """Save where we've left off"""
+        d=self.dir(dirname)
+        tmpfile=os.path.join(d, ".progress.tmp")
+        filename=os.path.join(d, ".progress")
+        with open(tmpfile, "w") as f:
+            f.write(json.dumps({
+                "url": self.url,
+                "num": self.getNumber()
+                }))
+        if(os.path.isfile(tmpfile)):
+            os.rename(tmpfile, filename)
