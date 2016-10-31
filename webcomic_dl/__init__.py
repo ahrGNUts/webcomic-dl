@@ -180,13 +180,15 @@ class Comic:
     
     def toDict(self):
         """Return a dict with all the important stuff"""
-        return {
+        d={
                 "title": self.getTitle(),
                 "url": self.url,
                 "img": self.getImgFilename(),
-                "alt": self.getAlt(),
-                "bonus": self.getBonusImgFilename()
+                "alt": self.getAlt()
                 }
+        if(self.getBonusImgFilename()):
+            d["bonus"]=self.getBonusImgFilename()
+        return d
     
     def dir(self, dirname:str=None):
         d=dirname or self.defaultDirname

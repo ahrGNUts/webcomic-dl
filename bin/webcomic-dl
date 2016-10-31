@@ -34,7 +34,7 @@ def saveMeta(dir:str, meta:str, pretty:bool=False):
     tmpfile=getTmpMetafile(dir)
     with open(tmpfile, "w") as f:
         if(pretty):
-            string=json.dumps(meta, sort_keys=True, indent=4, separators=(",", ": "))
+            string=json.dumps(meta, sort_keys=True, indent='\t', separators=(",", ": "))
         else:
             string=json.dumps(meta)
         f.write(string)
