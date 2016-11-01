@@ -174,14 +174,14 @@ class Comic:
 
     def hasNext(self):
         """Return whether there is another comic after this one"""
-        return self.getNextURL() is not None
+        url=self.getNextURL()
+        return (url is not None) and (url.rstrip("/#") != self.url.rstrip("/#"))
 
     def getNextComic(self, url:str=None):
         """Return a Comic object corresponding to the next comic"""
-        url=url or self.getNextURL()
-        if(url is not None):
+        if(url or self.hasNext()):
             return self.__class__(
-                    url      = url,
+                    url      = url or self.getNextURL(),
                     number   = None if self.number is None else self.number+1,
                     floating = self.floating)
         return None
@@ -194,7 +194,7 @@ class Comic:
         if(self.getTitle()):
             d["title"]=self.getTitle()
         if(self.getImgFilename()):
-            d["img"]=self.getTitle()
+            d["img"]=self.getImgFilename()
         if(self.getAlt()):
             d["alt"]=self.getAlt()
         if(self.getBonusImgFilename()):

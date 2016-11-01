@@ -63,7 +63,7 @@ else:
 
 while comic:
     n=comic.getNumber()
-    if((not args.resume) or (not getMetaItem(meta, n))):
+    if(not (args.resume and getMetaItem(meta, n))):
         comic.load()
         comic.download(args.dir, args.overwrite)
         addMetaItem(meta, n, comic.toDict())
