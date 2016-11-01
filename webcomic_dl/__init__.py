@@ -124,24 +124,31 @@ class Comic:
 
     def getImg(self):
         """Return the image URL for this page"""
-        return urljoin(
-                self.url,
-                self._getAttr(self.imgSelector, "src")
-                )
+        imgurl=self._getAttr(self.imgSelector, "src")
+        if(imgurl):
+            return urljoin(
+                    self.url,
+                    imgurl
+                    )
+        return None
 
     def getImgExtension(self, img=None):
         """Return the filename extension for the image"""
         i=img or self.getImg()
-        return re.search(r'\.([a-zA-Z]+)$', i).group(1)
+        if(i):
+            return re.search(r'\.([a-zA-Z]+)$', i).group(1)
+        return None
 
     def getImgFilename(self, suffix:str="", extension:str=None):
         """Return the filename to save the image as"""
-        ext=extension or self.getImgExtension()
-        parts=[str(self.getNumber()).zfill(6)]
-        if(self.getTitle()):
-            parts.append(self.getTitle())
-        out=(" - ".join(parts)) + suffix + "." + ext
-        return re.sub(r'[/\\]', '_', out)
+        if(self.getImg()):
+            ext=extension or self.getImgExtension()
+            parts=[str(self.getNumber()).zfill(6)]
+            if(self.getTitle()):
+                parts.append(self.getTitle())
+            out=(" - ".join(parts)) + suffix + "." + ext
+            return re.sub(r'[/\\]', '_', out)
+        return None
 
     def getBonusImg(self):
         if(self.bonusSelector):
@@ -182,11 +189,14 @@ class Comic:
     def toDict(self):
         """Return a dict with all the important stuff"""
         d={
-                "title": self.getTitle(),
-                "url": self.url,
-                "img": self.getImgFilename(),
-                "alt": self.getAlt()
+                "url": self.url
                 }
+        if(self.getTitle()):
+            d["title"]=self.getTitle()
+        if(self.getImgFilename()):
+            d["img"]=self.getTitle()
+        if(self.getAlt()):
+            d["alt"]=self.getAlt()
         if(self.getBonusImgFilename()):
             d["bonus"]=self.getBonusImgFilename()
         return d
@@ -200,11 +210,12 @@ class Comic:
     def download(self, dirname:str=None, overwrite=False):
         """Download the image, saving it in the specified directory. Saves under a different name and then moves it, to improve integrity"""
         d=self.dir(dirname)
-        self.downloadImage(
-                os.path.join(d, self.getImgFilename()),
-                self.getImg(),
-                overwrite
-                )
+        if(self.getImg()):
+            self.downloadImage(
+                    os.path.join(d, self.getImgFilename()),
+                    self.getImg(),
+                    overwrite
+                    )
         if(self.getBonusImg()):
             self.downloadImage(
                     os.path.join(d, self.getBonusImgFilename()),
