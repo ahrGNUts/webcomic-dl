@@ -140,7 +140,8 @@ class Comic:
         parts=[str(self.getNumber()).zfill(6)]
         if(self.getTitle()):
             parts.append(self.getTitle())
-        return (" - ".join(parts)) + suffix + "." + ext
+        out=(" - ".join(parts)) + suffix + "." + ext
+        return re.sub(r'[/\\]', '_', out)
 
     def getBonusImg(self):
         if(self.bonusSelector):
