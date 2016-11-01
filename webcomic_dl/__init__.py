@@ -73,7 +73,7 @@ class Comic:
     def load(self):
         """Downloads the webpage. Prett important for most of the stuff in this class"""
         if(self.dom is None):
-            print("downloading webpage {0}".format(self.url))
+            print("Downloading webpage {0}".format(self.url))
             self.dom=self.getDOM(self.url)
 
     def _getElements(self, selector:str, dom=None):
