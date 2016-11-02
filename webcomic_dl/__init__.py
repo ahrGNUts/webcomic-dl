@@ -208,7 +208,7 @@ class Comic:
         if(self.getBonusImgFilename()):
             d["bonus"]=self.getBonusImgFilename()
         if(self.getSupplementalText()):
-            d["bonus"]=self.getSupplementalText()
+            d["text"]=self.getSupplementalText()
         return d
 
     def dir(self, dirname:str=None):
