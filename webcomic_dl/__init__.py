@@ -167,8 +167,11 @@ class Comic:
         if(self.textSelector):
             text=etree.tostring(self._getElement(self.textSelector), method="text", encoding="utf-8")
             text=text.strip().decode(self.encoding)
-            return re.sub('\s+', ' ', text)
-        return None
+            text=re.sub('\s+', ' ', text)
+            if(text):
+                return text or None
+        else:
+            return None
 
     def getAlt(self):
         """Return the alt text for this comic"""
