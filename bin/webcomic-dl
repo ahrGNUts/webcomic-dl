@@ -34,7 +34,7 @@ def saveMeta(dir:str, meta:str, pretty:bool=False):
     tmpfile=getTmpMetafile(dir)
     with open(tmpfile, "w") as f:
         if(pretty):
-            string=json.dumps(meta, sort_keys=True, indent='\t', separators=(",", ": "))
+            string=pretty(meta)
         else:
             string=json.dumps(meta)
         f.write(string)
@@ -49,6 +49,9 @@ def getMetaItem(meta, n):
 
 def addMetaItem(meta, n, item):
     meta["{0}".format(n).zfill(6)]=item
+
+def pretty(data, indent='\t'):
+    return json.dumps(data, sort_keys=True, indent=indent, separators=(",", ": "))
 
 args=cli.getArgs()
 cls=getComicClass(args.comic)
@@ -67,6 +70,8 @@ while comic:
         comic.load()
         comic.download(args.dir, args.overwrite)
         addMetaItem(meta, n, comic.toDict())
+        if(args.verbose):
+            print(pretty(comic.toDict()))
         saveMeta(dir, meta, args.pretty)
     nextMeta=getMetaItem(meta, n+1)
     nextURL=None if nextMeta is None else nextMeta["url"]

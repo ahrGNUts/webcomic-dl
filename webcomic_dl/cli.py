@@ -48,6 +48,11 @@ def getArgs():
     p.add_argument("-p", "--pretty",
             dest="pretty",
             action="store_true",
-            help="saves metadata JSON pretty-printed"
+            help="Save metadata JSON pretty-printed"
+            )
+    p.add_argument("-v", "--verbose",
+            dest="verbose",
+            action="store_true",
+            help="Be verbose. Mostly for testing purposes"
             )
     return p.parse_args()

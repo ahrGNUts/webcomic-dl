@@ -1,6 +1,6 @@
 import requests
 import re
-from lxml import html
+from lxml import html, etree
 from lxml.cssselect import CSSSelector
 from urllib.parse import urljoin
 import os.path
@@ -17,24 +17,28 @@ class Comic:
     bonusSelector=None
     """the CSS selector for the bonus img"""
     siteTitle=None
+    """The Site's Title"""
+    textSelector=None
     """the CSS selector for supplemental text"""
     defaultDirname="comics"
     """the default directory name to download into"""
-
     urlRegex=".*"
     """the regex for matching the URL to the Comic"""
-
     name=""
     """Name of the comic"""
-
     first=""
     """URL of first comic"""
-
     headers={}
     """
     Specifies headers to use for all the web requests.
 
     May be used in the future for authentication or useragent strings.
+    """
+    encoding="utf-8"
+    """
+    Text encoding of the comic site.
+
+    In the future this will be auto-detected
     """
 
     floating=True
@@ -45,7 +49,7 @@ class Comic:
     performing the checks and establishing the link, they should unset this
     field.
     """
-    
+
     dom=None
     """
     The DOM of the webpage for this comic
@@ -58,23 +62,20 @@ class Comic:
         elif re.search(cls.urlRegex, s):
             return s
         return False
-    @classmethod
-    def getDOM(cls, url:str):
-        """Returns a parsed DOM of the webpage of a URL"""
-        txt=requests.get(url, headers=cls.headers).text
-        return html.fromstring(txt)
 
     def __init__(self, url:str=None, number:int=1, floating:bool=True):
         """Creates a Comic object, downloads and parses the comic page"""
         self.url=self.match(url)
         self.floating = floating and (self.url!=self.first) #if the URL points to the first comic, it's not "floating"
         self.number=number
-    
+
     def load(self):
-        """Downloads the webpage. Prett important for most of the stuff in this class"""
+        """Downloads the webpage. Pretty important for most of the stuff in this class"""
         if(self.dom is None):
             print("Downloading webpage {0}".format(self.url))
-            self.dom=self.getDOM(self.url)
+            response=requests.get(self.url, headers=self.headers)
+            print(response)
+            self.dom=html.fromstring(response.text)
 
     def _getElements(self, selector:str, dom=None):
         """Return all elements matching the given selector"""
@@ -112,7 +113,7 @@ class Comic:
     def getNumber(self):
         """
         Return the page number
-        
+
         Most subclasses will want to override this with something that extracts
         the number from the webpage or URL
         """
@@ -154,11 +155,17 @@ class Comic:
         if(self.bonusSelector):
             return self._getAttr(self.bonusSelector, "src")
         return None
-        
+
     def getBonusImgFilename(self):
         img=self.getBonusImg()
         if(img):
             return self.getImgFilename(".bonus", self.getImgExtension(img))
+        return None
+
+    def getSupplementalText(self):
+        if(self.textSelector):
+            text=etree.tostring(self._getElement(self.textSelector), method="text").strip().decode(self.encoding)
+            return re.sub('\s+', ' ', text)
         return None
 
     def getAlt(self):
@@ -185,7 +192,7 @@ class Comic:
                     number   = None if self.number is None else self.number+1,
                     floating = self.floating)
         return None
-    
+
     def toDict(self):
         """Return a dict with all the important stuff"""
         d={
@@ -199,8 +206,10 @@ class Comic:
             d["alt"]=self.getAlt()
         if(self.getBonusImgFilename()):
             d["bonus"]=self.getBonusImgFilename()
+        if(self.getSupplementalText()):
+            d["bonus"]=self.getSupplementalText()
         return d
-    
+
     def dir(self, dirname:str=None):
         d=dirname or self.defaultDirname
         if(not os.path.isdir(d)):

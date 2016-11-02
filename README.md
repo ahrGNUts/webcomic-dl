@@ -4,7 +4,7 @@ Download the archives of a webcomic for offline reading
 
 ```
 usage: webcomic-dl [-h] [-c n] [-f] [-d dir] [-o] [-n] [--metadata-file file]
-                   [-m] [-p]
+                   [-m] [-p] [-v]
                    comic
 
 Download a webcomic archive
@@ -36,5 +36,6 @@ optional arguments:
   --metadata-file file  Specify where to save metadata. By default it is saved
                         in <output_dir>/info.json
   -m, --metadata-only   Don't download comics, just metadata
-  -p, --pretty          saves metadata JSON pretty-printed
+  -p, --pretty          Save metadata JSON pretty-printed
+  -v, --verbose         Be verbose. Mostly for testing purposes
 ```

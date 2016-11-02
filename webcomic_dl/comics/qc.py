@@ -9,5 +9,6 @@ class QuestionableContentComic(Comic):
     urlRegex="^https?://(?:www\.)?questionablecontent\.net(?:/|$)"
     name="questionable-content"
     first="https://questionablecontent.net/view.php?comic=1"
+    textSelector="#news"
     def getNumber(self):
         return int(re.search(r'comic=(\d+)', self.url).group(1))
