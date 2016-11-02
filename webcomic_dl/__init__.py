@@ -74,8 +74,9 @@ class Comic:
         if(self.dom is None):
             print("Downloading webpage {0}".format(self.url))
             response=requests.get(self.url, headers=self.headers)
-            print(response)
+            #TODO: try to get encoding from response header
             self.dom=html.fromstring(response.text)
+            #TODO: try to get encoding from meta tags
 
     def _getElements(self, selector:str, dom=None):
         """Return all elements matching the given selector"""
@@ -98,7 +99,7 @@ class Comic:
         """Return the value of the given attribute for the first element matching the given selector"""
         e=self._getElement(selector, dom)
         if(e is not None and attr in e.attrib):
-            return e.attrib[attr]
+            return e.attrib[attr].strip()
         else:
             return ""
 
@@ -106,7 +107,7 @@ class Comic:
         """Return the text of the first element matching the given selector"""
         e=self._getElement(selector, dom)
         if(e is not None):
-            return e.text
+            return e.text.strip()
         else:
             return ""
 
