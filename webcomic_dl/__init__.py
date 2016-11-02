@@ -165,7 +165,8 @@ class Comic:
 
     def getSupplementalText(self):
         if(self.textSelector):
-            text=etree.tostring(self._getElement(self.textSelector), method="text").strip().decode(self.encoding)
+            text=etree.tostring(self._getElement(self.textSelector), method="text", encoding="utf-8")
+            text=text.strip().decode(self.encoding)
             return re.sub('\s+', ' ', text)
         return None
 
