@@ -109,10 +109,11 @@ class Comic:
     @classmethod
     def imgFilename(cls, url, number, title="", suffix=""):
         ext=cls.getFileExtension(url)
+        num="{0}".format(number).zfill(6)
         if(title):
-            name="{0} - {1}{2}.{3}".format(number, title, suffix, ext)
+            name="{0} - {1}{2}.{3}".format(num, title, suffix, ext)
         else:
-            name="{0}{1}.{2}".format(number, suffix, ext)
+            name="{0}{1}.{2}".format(num, suffix, ext)
         return re.sub(r'[/\\]', '_', name)
 
     def getImgFilename(self, suffix:str=""):
