@@ -72,7 +72,6 @@ def main():
     while comic:
         n=comic.number
         if(not args.resume or getMetaItem(meta, n) is None):
-            comic.load()
             if(args.verbose):
                 print(util.prettyprint(comic.toDict()))
             comic.download(args.directory, args.overwrite)
