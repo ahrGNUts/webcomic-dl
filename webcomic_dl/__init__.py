@@ -39,6 +39,7 @@ class Comic:
     """The Webpage for this comic"""
     encoding=None
     """The character encoding of this comic's website"""
+
     @classmethod
     def match(cls, s:str):
         """Returns whether this Comic class will work for the given URL"""
@@ -48,7 +49,7 @@ class Comic:
             return s
         return False
 
-    def __init__(self, url:str=None, number:int=None, blank:bool=False):
+    def __init__(self, url=None, number:int=None, blank:bool=False):
         """Creates a Comic object, downloads and parses the comic page"""
         if(not blank):
             self.url=self.match(url)
@@ -161,11 +162,11 @@ class Comic:
         url=self.getNextURL()
         return (url is not None) and (url.rstrip("/#") != self.url.rstrip("/#"))
 
-    def getNextComic(self, url:str=None, blank:bool=None):
+    def getNextComic(self, url:str=None, blank:bool=False):
         """Return a Comic object corresponding to the next comic"""
         if(blank or url or self.hasNext()):
             comic=self.__class__(
-                    url      = url or self.getNextURL(),
+                    url      = url or blank or self.getNextURL(),
                     number   = None if self._number is None else self._number+1,
                     blank    = blank
                     )
