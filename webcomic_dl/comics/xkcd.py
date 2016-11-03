@@ -5,7 +5,7 @@ class XkcdComic(Comic):
     titleSelector="#ctitle"
     imgSelector="#comic img"
     siteTitle="xkcd"
-    defaultDirname="xkcd"
+    dir="xkcd"
     urlRegex="^https?://xkcd\.com(?:/|$)"
     name="xkcd"
     first="https://xkcd.com/1"

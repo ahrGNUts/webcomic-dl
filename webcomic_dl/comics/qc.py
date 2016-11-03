@@ -5,7 +5,7 @@ class QuestionableContentComic(Comic):
     titleSelector=False
     imgSelector="#strip"
     siteTitle="Questionable Content"
-    defaultDirname="Questionable Content"
+    dir="Questionable Content"
     urlRegex="^https?://(?:www\.)?questionablecontent\.net(?:/|$)"
     name="questionable-content"
     first="https://questionablecontent.net/view.php?comic=1"

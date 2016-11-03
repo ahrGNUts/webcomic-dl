@@ -5,7 +5,7 @@ class DinosaurComic(Comic):
     titleSelector=False
     imgSelector="img.comic"
     siteTitle="Dinosaur Comics"
-    defaultDirname="Dinosaur Comics"
+    dir="Dinosaur Comics"
     urlRegex="^https?://(?:www\.)?qwantz\.com(?:/|$)"
     name="dinosaur-comics"
     first="http://www.qwantz.com/index.php?comic=1"
