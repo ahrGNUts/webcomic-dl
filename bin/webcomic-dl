@@ -34,7 +34,7 @@ def saveMeta(directory:str, meta:str, pretty:bool=False):
     tmpfile=getTmpMetafile(directory)
     with open(tmpfile, "w") as f:
         if(pretty):
-            string=prettyprint(meta)
+            string=util.prettyprint(meta)
         else:
             string=json.dumps(meta)
         f.write(string)
@@ -69,7 +69,7 @@ while comic:
     if(not (args.resume and getMetaItem(meta, n))):
         comic.load()
         if(args.verbose):
-            print(prettyprint(comic.toDict()))
+            print(util.prettyprint(comic.toDict()))
         comic.download(args.directory, args.overwrite)
         addMetaItem(meta, n, comic.toDict())
         saveMeta(comic.directory, meta, args.pretty)
