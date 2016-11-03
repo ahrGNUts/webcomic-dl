@@ -6,6 +6,8 @@ from urllib.parse import urljoin
 import os.path
 import os
 import json
+from webcomic_dl.webpage import Webpage
+
 
 class Comic:
     nextSelector=None
@@ -34,17 +36,10 @@ class Comic:
 
     May be used in the future for authentication or useragent strings.
     """
-    encoding="utf-8"
-    """
-    Text encoding of the comic site.
-
-    In the future this will be auto-detected
-    """
-
-    dom=None
-    """
-    The DOM of the webpage for this comic
-    """
+    page=None
+    """The Webpage for this comic"""
+    encoding=None
+    """The character encoding of this comic's website"""
     @classmethod
     def match(cls, s:str):
         """Returns whether this Comic class will work for the given URL"""
@@ -53,11 +48,6 @@ class Comic:
         elif re.search(cls.urlRegex, s):
             return s
         return False
-
-    @classmethod
-    def getDOM(cls, url, headers=None):
-        response=requests.get(url, headers=headers)
-        return html.fromstring(response.text)
 
     def __init__(self, url:str=None, number:int=None):
         """Creates a Comic object, downloads and parses the comic page"""
@@ -78,42 +68,9 @@ class Comic:
 
         Pretty important for most of the stuff in this class
         """
-        if(self.dom is None):
+        if(self.page is None):
             print("Downloading webpage {0}".format(self.url))
-            self.dom=self.getDOM(self.url, self.headers)
-
-    def _getElements(self, selector:str, dom=None):
-        """Return all elements matching the given selector"""
-        self.load()
-        d=dom if(dom is not None) else self.dom
-        if not selector:
-            return None
-        sel=CSSSelector(selector)
-        e=sel(d)
-        return e
-
-    def _getElement(self, selector:str, dom=None):
-        """Return the first element matching the given selector"""
-        e=self._getElements(selector, dom)
-        if(e is not None and len(e)):
-            return e[0]
-        return None
-
-    def _getAttr(self, selector:str, attr:str, dom=None):
-        """Return the value of the given attribute for the first element matching the given selector"""
-        e=self._getElement(selector, dom)
-        if(e is not None and attr in e.attrib):
-            return e.attrib[attr].strip()
-        else:
-            return ""
-
-    def _getText(self, selector:str, dom=None):
-        """Return the text of the first element matching the given selector"""
-        e=self._getElement(selector, dom)
-        if(e is not None):
-            return e.text.strip()
-        else:
-            return ""
+            self.page=Webpage(self.url, headers=self.headers, encoding=self.encoding)
 
     def getNumber(self):
         """
@@ -126,67 +83,69 @@ class Comic:
 
     def getTitle(self):
         """Return the title of this comic"""
-        return self._getText(self.titleSelector)
+        self.load()
+        return self.page.getText(self.titleSelector)
 
     def getImg(self):
         """Return the image URL for this page"""
-        imgurl=self._getAttr(self.imgSelector, "src")
-        if(imgurl):
-            return urljoin(
-                    self.url,
-                    imgurl
-                    )
-        return None
-
-    def getImgExtension(self, img=None):
-        """Return the filename extension for the image"""
-        i=img or self.getImg()
-        if(i):
-            return re.search(r'\.([a-zA-Z]+)$', i).group(1)
-        return None
-
-    def getImgFilename(self, suffix:str="", extension:str=None):
-        """Return the filename to save the image as"""
-        if(self.getImg()):
-            ext=extension or self.getImgExtension()
-            parts=[str(self.getNumber()).zfill(6)]
-            if(self.getTitle()):
-                parts.append(self.getTitle())
-            out=(" - ".join(parts)) + suffix + "." + ext
-            return re.sub(r'[/\\]', '_', out)
-        return None
+        self.load()
+        return self.page.getURL(self.imgSelector, "src")
 
     def getBonusImg(self):
+        """Return the bonus image URL for this page"""
+        self.load()
         if(self.bonusSelector):
-            return self._getAttr(self.bonusSelector, "src")
+            return self.page.getURL(self.bonusSelector, "src")
         return None
 
-    def getBonusImgFilename(self):
+    @staticmethod
+    def getFileExtension(url:str):
+        """Return the filename extension for the image"""
+        if(url):
+            parts=url.split(".")
+            if(len(parts) > 1):
+                return parts[-1]
+        return None
+
+    @classmethod
+    def imgFilename(cls, url, number, title="", suffix=""):
+        ext=cls.getFileExtension(url)
+        if(title):
+            name="{0} - {1}{2}.{3}".format(number, title, suffix, ext)
+        else:
+            name="{0}{1}.{2}".format(number, suffix, ext)
+        return re.sub(r'[/\\]', '_', name)
+
+    def getImgFilename(self, suffix:str=""):
+        """Return the filename to save the image as"""
+        img=self.getImg()
+        if(img):
+            return self.imgFilename(img, self.getNumber(), self.getTitle())
+        return None
+
+    def getBonusImgFilename(self, suffix:str=""):
+        """Return the filename to save the bonus image as"""
         img=self.getBonusImg()
         if(img):
-            return self.getImgFilename(".bonus", self.getImgExtension(img))
+            return self.imgFilename(img, self.getNumber(), self.getTitle(), ".bonus")
         return None
 
     def getSupplementalText(self):
+        self.load()
         if(self.textSelector):
-            text=etree.tostring(self._getElement(self.textSelector), method="text", encoding="utf-8")
-            text=text.strip().decode(self.encoding)
-            text=re.sub('\s+', ' ', text)
-            if(text):
-                return text or None
+            return self.page.getText(self.textSelector)
         else:
             return None
 
     def getAlt(self):
         """Return the alt text for this comic"""
-        return self._getAttr(self.imgSelector, "alt")
+        self.load()
+        return self.page.getAttr(self.imgSelector, "alt")
 
     def getNextURL(self):
         """Return the URL of the next page if there is one, or False otherwise"""
-        url=self._getAttr(self.nextSelector, "href")
-        if(url):
-            return urljoin(self.url, url)
-        return None
+        self.load()
+        return self.page.getURL(self.nextSelector)
 
     def hasNext(self):
         """Return whether there is another comic after this one"""
