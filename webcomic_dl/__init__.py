@@ -20,7 +20,7 @@ class Comic:
     """The Site's Title"""
     textSelector=None
     """the CSS selector for supplemental text"""
-    defaultDirname="comics"
+    dir="comics"
     """the default directory name to download into"""
     urlRegex=".*"
     """the regex for matching the URL to the Comic"""
@@ -68,6 +68,9 @@ class Comic:
         self.url=self.match(url)
         self.floating = floating and (self.url!=self.first) #if the URL points to the first comic, it's not "floating"
         self.number=number
+
+    def setDir(self, dir):
+        self.dir=dir
 
     def load(self):
         """Downloads the webpage. Pretty important for most of the stuff in this class"""
@@ -192,10 +195,12 @@ class Comic:
     def getNextComic(self, url:str=None):
         """Return a Comic object corresponding to the next comic"""
         if(url or self.hasNext()):
-            return self.__class__(
+            comic=self.__class__(
                     url      = url or self.getNextURL(),
                     number   = None if self.number is None else self.number+1,
                     floating = self.floating)
+            comic.setDir(self.dir)
+            return comic
         return None
 
     def toDict(self):
@@ -215,24 +220,19 @@ class Comic:
             d["text"]=self.getSupplementalText()
         return d
 
-    def dir(self, dirname:str=None):
-        d=dirname or self.defaultDirname
-        if(not os.path.isdir(d)):
-            os.mkdir(d)
-        return d
-
     def download(self, dirname:str=None, overwrite=False):
         """Download the image, saving it in the specified directory. Saves under a different name and then moves it, to improve integrity"""
-        d=self.dir(dirname)
+        if(not os.path.isdir(self.dir)):
+            os.mkdir(self.dir)
         if(self.getImg()):
             self.downloadImage(
-                    os.path.join(d, self.getImgFilename()),
+                    os.path.join(self.dir, self.getImgFilename()),
                     self.getImg(),
                     overwrite
                     )
         if(self.getBonusImg()):
             self.downloadImage(
-                    os.path.join(d, self.getBonusImgFilename()),
+                    os.path.join(self.dir, self.getBonusImgFilename()),
                     self.getBonusImg(),
                     overwrite
                     )

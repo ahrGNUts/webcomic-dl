@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import webcomic_dl
 from webcomic_dl.comics import *
-from webcomic_dl import cli, Comic
+from webcomic_dl import cli, Comic, util
 import requests
 import os.path
 import os
@@ -50,9 +50,6 @@ def getMetaItem(meta, n):
 def addMetaItem(meta, n, item):
     meta["{0}".format(n).zfill(6)]=item
 
-def prettyprint(data, indent='\t'):
-    return json.dumps(data, sort_keys=True, indent=indent, separators=(",", ": "))
-
 args=cli.getArgs()
 cls=getComicClass(args.comic)
 dir=args.dir or cls.defaultDirname
@@ -63,6 +60,8 @@ if(args.fromURL):
     comic=cls(args.comic)
 else:
     comic=cls(cls.first)
+
+comic.setDir(dir)
 
 while comic:
     n=comic.getNumber()
