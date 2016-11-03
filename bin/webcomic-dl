@@ -6,13 +6,16 @@ import requests
 import os.path
 import os
 import json
+import sys
+import traceback
 
 def getComicClass(comic):
     """Return the class appropriate for a given comic name or URL"""
     for c in Comic.__subclasses__():
-        if(c.match(args.comic)):
+        if(c.match(comic)):
             print("using {0} downloader".format(c.__name__))
             return c
+    return None
 
 def getMetafile(directory):
     return os.path.join(directory, "info.json")
@@ -50,30 +53,39 @@ def getMetaItem(meta, n):
 def addMetaItem(meta, n, item):
     meta["{0}".format(n).zfill(6)]=item
 
-args=cli.getArgs()
-cls=getComicClass(args.comic)
+def main():
+    args=cli.getArgs()
+    cls=getComicClass(args.comic)
+    if(cls is None):
+        sys.exit(1)
 
+    if(args.fromURL):
+        comic=cls(args.comic)
+    else:
+        comic=cls(cls.first)
 
-if(args.fromURL):
-    comic=cls(args.comic)
-else:
-    comic=cls(cls.first)
+    if(args.directory):
+        comic.setDir(args.directory)
 
-if(args.directory):
-    comic.setDir(args.directory)
+    meta=getMeta(comic.directory)
 
-meta=getMeta(comic.directory)
+    while comic:
+        n=comic.getNumber()
+        if(not (args.resume and getMetaItem(meta, n))):
+            comic.load()
+            if(args.verbose):
+                print(util.prettyprint(comic.toDict()))
+            comic.download(args.directory, args.overwrite)
+            addMetaItem(meta, n, comic.toDict())
+            saveMeta(comic.directory, meta, args.pretty)
+        nextMeta=getMetaItem(meta, n+1)
+        nextURL=None if nextMeta is None else nextMeta["url"]
+        comic=comic.getNextComic(nextURL)
+    print("Done!")
 
-while comic:
-    n=comic.getNumber()
-    if(not (args.resume and getMetaItem(meta, n))):
-        comic.load()
-        if(args.verbose):
-            print(util.prettyprint(comic.toDict()))
-        comic.download(args.directory, args.overwrite)
-        addMetaItem(meta, n, comic.toDict())
-        saveMeta(comic.directory, meta, args.pretty)
-    nextMeta=getMetaItem(meta, n+1)
-    nextURL=None if nextMeta is None else nextMeta["url"]
-    comic=comic.getNextComic(nextURL)
-print("Done!")
+try:
+    main()
+except KeyboardInterrupt:
+    print("\rExiting due to keyboard interrupt")
+except Exception:
+    traceback.print_exc(file=sys.stderr)
