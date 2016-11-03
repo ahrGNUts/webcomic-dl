@@ -6,7 +6,7 @@ class SmbcComic(Comic):
     imgSelector="#cc-comic"
     bonusSelector="#aftercomic > img"
     siteTitle="Saturday Morning Breakfast Cereal"
-    dir="SMBC"
+    directory="SMBC"
     urlRegex="^https?://(?:www\.)?smbc-comics\.com(?:/|$)"
     name="smbc"
     first="http://www.smbc-comics.com/comic/2002-09-05"

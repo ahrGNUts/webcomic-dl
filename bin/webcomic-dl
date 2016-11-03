@@ -14,24 +14,24 @@ def getComicClass(comic):
             print("using {0} downloader".format(c.__name__))
             return c
 
-def getMetafile(dir):
-    return os.path.join(dir, "info.json")
+def getMetafile(directory):
+    return os.path.join(directory, "info.json")
 
-def getTmpMetafile(dir):
-    return os.path.join(dir, ".info.json.tmp")
+def getTmpMetafile(directory):
+    return os.path.join(directory, ".info.json.tmp")
 
-def getMeta(dir):
+def getMeta(directory):
     """Return a dict containing the metadata for this comic"""
-    metaFile=getMetafile(dir)
+    metaFile=getMetafile(directory)
     if(os.path.isfile(metaFile)):
         with open(metaFile, "r") as f:
             return json.loads(f.read())
     return {}
 
-def saveMeta(dir:str, meta:str, pretty:bool=False):
+def saveMeta(directory:str, meta:str, pretty:bool=False):
     """Save the metadata dict atomically"""
-    metaFile=getMetafile(dir)
-    tmpfile=getTmpMetafile(dir)
+    metaFile=getMetafile(directory)
+    tmpfile=getTmpMetafile(directory)
     with open(tmpfile, "w") as f:
         if(pretty):
             string=prettyprint(meta)
@@ -52,16 +52,17 @@ def addMetaItem(meta, n, item):
 
 args=cli.getArgs()
 cls=getComicClass(args.comic)
-dir=args.dir or cls.defaultDirname
 
-meta=getMeta(dir)
 
 if(args.fromURL):
     comic=cls(args.comic)
 else:
     comic=cls(cls.first)
 
-comic.setDir(dir)
+if(args.directory):
+    comic.setDir(args.directory)
+
+meta=getMeta(comic.directory)
 
 while comic:
     n=comic.getNumber()
@@ -69,9 +70,9 @@ while comic:
         comic.load()
         if(args.verbose):
             print(prettyprint(comic.toDict()))
-        comic.download(args.dir, args.overwrite)
+        comic.download(args.directory, args.overwrite)
         addMetaItem(meta, n, comic.toDict())
-        saveMeta(dir, meta, args.pretty)
+        saveMeta(comic.directory, meta, args.pretty)
     nextMeta=getMetaItem(meta, n+1)
     nextURL=None if nextMeta is None else nextMeta["url"]
     comic=comic.getNextComic(nextURL)

@@ -20,7 +20,7 @@ class Comic:
     """The Site's Title"""
     textSelector=None
     """the CSS selector for supplemental text"""
-    dir="comics"
+    directory="comics"
     """the default directory name to download into"""
     urlRegex=".*"
     """the regex for matching the URL to the Comic"""
@@ -69,8 +69,8 @@ class Comic:
         self.floating = floating and (self.url!=self.first) #if the URL points to the first comic, it's not "floating"
         self.number=number
 
-    def setDir(self, dir):
-        self.dir=dir
+    def setDir(self, directory):
+        self.directory=directory
 
     def load(self):
         """Downloads the webpage. Pretty important for most of the stuff in this class"""
@@ -199,7 +199,7 @@ class Comic:
                     url      = url or self.getNextURL(),
                     number   = None if self.number is None else self.number+1,
                     floating = self.floating)
-            comic.setDir(self.dir)
+            comic.setDir(self.directory)
             return comic
         return None
 
@@ -222,17 +222,17 @@ class Comic:
 
     def download(self, dirname:str=None, overwrite=False):
         """Download the image, saving it in the specified directory. Saves under a different name and then moves it, to improve integrity"""
-        if(not os.path.isdir(self.dir)):
-            os.mkdir(self.dir)
+        if(not os.path.isdir(self.directory)):
+            os.mkdir(self.directory)
         if(self.getImg()):
             self.downloadImage(
-                    os.path.join(self.dir, self.getImgFilename()),
+                    os.path.join(self.directory, self.getImgFilename()),
                     self.getImg(),
                     overwrite
                     )
         if(self.getBonusImg()):
             self.downloadImage(
-                    os.path.join(self.dir, self.getBonusImgFilename()),
+                    os.path.join(self.directory, self.getBonusImgFilename()),
                     self.getBonusImg(),
                     overwrite
                     )

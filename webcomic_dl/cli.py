@@ -20,7 +20,7 @@ def getArgs():
             help="By default, webcomic-dl will download from the first webcomic in the series, regardless of the URL. This flag overrides it. For some comics that don't have numbers associated with their comics, this may cause naming collisions if you later decide to go back and download older comics. Thus, only use this if you are either certain you will never want earlier comics, or are willing to re-download the newer ones."
             )
     p.add_argument("-d", "--dir",
-            dest="dir",
+            dest="directory",
             metavar="dir",
             default="",
             help="Specify an output directory"
