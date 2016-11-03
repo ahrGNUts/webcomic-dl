@@ -150,7 +150,7 @@ class Comic:
     def getAlt(self):
         """Return the alt text for this comic"""
         self.load()
-        return self.page.getAttr(self.imgSelector, "alt")
+        return self.page.getAttr(self.imgSelector, "title")
 
     def getNextURL(self):
         """Return the URL of the next page if there is one, or False otherwise"""
