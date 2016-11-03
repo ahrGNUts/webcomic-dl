@@ -13,8 +13,7 @@ class SmbcComic(Comic):
     first="http://www.smbc-comics.com/comic/2002-09-05"
 
     def getTitle(self):
-        self.load()
-        return re.search(r'^Saturday Morning Breakfast Cereal - (.*)$', self.page.getText("title")).groups(1)[0]
+        return re.search(r'^Saturday Morning Breakfast Cereal - (.*)$', super().getTitle()).groups(1)[0]
 
     def getNumber(self):
         if(self.number is None):
