@@ -71,7 +71,7 @@ def main():
 
     while comic:
         n=comic.getNumber()
-        if(not (args.resume and getMetaItem(meta, n))):
+        if(not args.resume or not getMetaItem(meta, n)):
             comic.load()
             if(args.verbose):
                 print(util.prettyprint(comic.toDict()))
