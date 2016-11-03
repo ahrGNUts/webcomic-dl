@@ -8,7 +8,6 @@ import os
 import json
 from webcomic_dl.webpage import Webpage
 
-
 class Comic:
     nextSelector=None
     """the CSS selector for the "next" link"""
