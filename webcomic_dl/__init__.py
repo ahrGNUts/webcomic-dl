@@ -41,15 +41,6 @@ class Comic:
     In the future this will be auto-detected
     """
 
-    floating=True
-    """
-    Keeps track of whether anything links the number field to the canonical
-    numbering scheme of the comic. Subclasses should check this in getNumber(),
-    and only perform expensive checks on numbering if this field is True. After
-    performing the checks and establishing the link, they should unset this
-    field.
-    """
-
     dom=None
     """
     The DOM of the webpage for this comic
@@ -63,23 +54,34 @@ class Comic:
             return s
         return False
 
-    def __init__(self, url:str=None, number:int=1, floating:bool=True):
+    @classmethod
+    def getDOM(cls, url, headers=None):
+        response=requests.get(url, headers=headers)
+        return html.fromstring(response.text)
+
+    def __init__(self, url:str=None, number:int=None):
         """Creates a Comic object, downloads and parses the comic page"""
         self.url=self.match(url)
-        self.floating = floating and (self.url!=self.first) #if the URL points to the first comic, it's not "floating"
-        self.number=number
+        if(number is not None):
+            self.number=number
+        elif(self.url!=self.first):
+            self.number=1
+        else:
+            self.number=None
 
     def setDir(self, directory):
         self.directory=directory
 
     def load(self):
-        """Downloads the webpage. Pretty important for most of the stuff in this class"""
+        """
+        Downloads the webpage.
+
+        Pretty important for most of the stuff in this class
+        """
         if(self.dom is None):
             print("Downloading webpage {0}".format(self.url))
             response=requests.get(self.url, headers=self.headers)
-            #TODO: try to get encoding from response header
-            self.dom=html.fromstring(response.text)
-            #TODO: try to get encoding from meta tags
+            self.dom=self.getDOM(self.url, self.headers)
 
     def _getElements(self, selector:str, dom=None):
         """Return all elements matching the given selector"""
@@ -197,8 +199,8 @@ class Comic:
         if(url or self.hasNext()):
             comic=self.__class__(
                     url      = url or self.getNextURL(),
-                    number   = None if self.number is None else self.number+1,
-                    floating = self.floating)
+                    number   = None if self.number is None else self.number+1
+                    )
             comic.setDir(self.directory)
             return comic
         return None

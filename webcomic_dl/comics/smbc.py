@@ -15,13 +15,12 @@ class SmbcComic(Comic):
         return re.search(r'^Saturday Morning Breakfast Cereal - (.*)$', self._getText("title")).groups(1)[0]
 
     def getNumber(self):
-        if(self.floating):
+        if(self.number is None):
             print("downloading index")
             dom=self.getDOM("http://smbc-comics.com/comic/archive")
             elements=self._getElements("select[name='comic'] > option", dom)
             for i, e in enumerate(elements):
                 if(self.url.rstrip("/").endswith("/" + e.attrib["value"])):
                     self.number=i
-                    self.floating=False
                     break
         return self.number
