@@ -80,7 +80,6 @@ class Comic:
         """
         if(self.dom is None):
             print("Downloading webpage {0}".format(self.url))
-            response=requests.get(self.url, headers=self.headers)
             self.dom=self.getDOM(self.url, self.headers)
 
     def _getElements(self, selector:str, dom=None):
