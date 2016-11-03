@@ -48,15 +48,16 @@ class Comic:
             return s
         return False
 
-    def __init__(self, url:str=None, number:int=None):
+    def __init__(self, url:str=None, number:int=None, blank:bool=False):
         """Creates a Comic object, downloads and parses the comic page"""
-        self.url=self.match(url)
+        if(not blank):
+            self.url=self.match(url)
         if(number is not None):
-            self.number=number
-        elif(self.url!=self.first):
-            self.number=1
+            self._number=number
+        elif(self.url==self.first):
+            self._number=1
         else:
-            self.number=None
+            self._number=None
 
     def setDir(self, directory):
         self.directory=directory
@@ -71,14 +72,22 @@ class Comic:
             print("Downloading webpage {0}".format(self.url))
             self.page=Webpage(self.url, headers=self.headers, encoding=self.encoding)
 
+    @property
+    def number(self):
+        if(self._number is None):
+            self._number=self.getNumber()
+        return self._number
+
     def getNumber(self):
         """
         Return the page number
 
-        Most subclasses will want to override this with something that extracts
-        the number from the webpage or URL
+        Subclasses need to override this with something that extracts the
+        number from the webpage or URL. As these methods can be expensive
+        (downloading index pages, etc) it's memoized behind the 'number'
+        @property
         """
-        return self.number
+        pass
 
     def getTitle(self):
         """Return the title of this comic"""
@@ -152,12 +161,13 @@ class Comic:
         url=self.getNextURL()
         return (url is not None) and (url.rstrip("/#") != self.url.rstrip("/#"))
 
-    def getNextComic(self, url:str=None):
+    def getNextComic(self, url:str=None, blank:bool=None):
         """Return a Comic object corresponding to the next comic"""
-        if(url or self.hasNext()):
+        if(blank or url or self.hasNext()):
             comic=self.__class__(
                     url      = url or self.getNextURL(),
-                    number   = None if self.number is None else self.number+1
+                    number   = None if self._number is None else self._number+1,
+                    blank    = blank
                     )
             comic.setDir(self.directory)
             return comic

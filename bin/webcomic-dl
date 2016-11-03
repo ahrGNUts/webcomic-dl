@@ -70,8 +70,8 @@ def main():
     meta=getMeta(comic.directory)
 
     while comic:
-        n=comic.getNumber()
-        if(not args.resume or not getMetaItem(meta, n)):
+        n=comic.number
+        if(not args.resume or getMetaItem(meta, n) is None):
             comic.load()
             if(args.verbose):
                 print(util.prettyprint(comic.toDict()))
@@ -79,8 +79,13 @@ def main():
             addMetaItem(meta, n, comic.toDict())
             saveMeta(comic.directory, meta, args.pretty)
         nextMeta=getMetaItem(meta, n+1)
-        nextURL=None if nextMeta is None else nextMeta["url"]
-        comic=comic.getNextComic(nextURL)
+        if(nextMeta != False):
+            nextURL=None if nextMeta is None else nextMeta["url"]
+            comic=comic.getNextComic(nextURL)
+            for num in range(n+1, comic.number):
+                addMetaItem(meta, num, False)
+        else:
+            comic=comic.getNextComic(blank=True)
     print("Done!")
 
 try:
