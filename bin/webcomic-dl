@@ -81,8 +81,9 @@ def main():
         if(nextMeta != False):
             nextURL=None if nextMeta is None else nextMeta["url"]
             comic=comic.getNextComic(nextURL)
-            for num in range(n+1, comic.number):
-                addMetaItem(meta, num, False)
+            if(comic):
+                for num in range(n+1, comic.number):
+                    addMetaItem(meta, num, False)
         else:
             comic=comic.getNextComic(blank=True)
     print("Done!")
