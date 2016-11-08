@@ -1,1 +1,1 @@
-__all__=["qc", "xkcd", "smbc", "dinosaur"]
+__all__=["qc", "xkcd", "smbc", "dinosaur", "templaraz"]
