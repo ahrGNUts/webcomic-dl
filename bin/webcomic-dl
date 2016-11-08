@@ -59,10 +59,7 @@ def main():
     if(cls is None):
         sys.exit(1)
 
-    if(args.fromURL):
-        comic=cls(args.comic)
-    else:
-        comic=cls(cls.first)
+    comic=cls(args.comic)
 
     if(args.directory):
         comic.setDir(args.directory)
