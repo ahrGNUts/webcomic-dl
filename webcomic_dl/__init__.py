@@ -7,6 +7,7 @@ import os.path
 import os
 import json
 from webcomic_dl.webpage import Webpage
+import sys
 
 class Comic:
     nextSelector=None
@@ -88,9 +89,7 @@ class Comic:
         (downloading index pages, etc) it's memoized behind the 'number'
         @property
         """
-        print("{0} does not support downloading from arbitrary start-points.".format(self.siteTitle))
-        print("to download this comic, try:")
-        print("webcomic-dl {0}".format(self.name))
+        raise NotImplementedError("This comic must be downloaded from the first page!")
 
     def getTitle(self):
         """Return the title of this comic"""
@@ -132,14 +131,14 @@ class Comic:
         """Return the filename to save the image as"""
         img=self.getImg()
         if(img):
-            return self.imgFilename(img, self.getNumber(), self.getTitle())
+            return self.imgFilename(img, self.number, self.getTitle())
         return None
 
     def getBonusImgFilename(self, suffix:str=""):
         """Return the filename to save the bonus image as"""
         img=self.getBonusImg()
         if(img):
-            return self.imgFilename(img, self.getNumber(), self.getTitle(), ".bonus")
+            return self.imgFilename(img, self.number, self.getTitle(), ".bonus")
         return None
 
     def getSupplementalText(self):
