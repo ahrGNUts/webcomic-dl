@@ -50,7 +50,7 @@ class Comic:
         return False
 
     def __init__(self, url=None, number:int=None, blank:bool=False):
-        """Creates a Comic object, downloads and parses the comic page"""
+        """Creates a Comic object"""
         if(not blank):
             self.url=self.match(url)
         if(number is not None):
@@ -88,7 +88,9 @@ class Comic:
         (downloading index pages, etc) it's memoized behind the 'number'
         @property
         """
-        pass
+        print("{0} does not support downloading from arbitrary start-points.".format(self.siteTitle))
+        print("to download this comic, try:")
+        print("webcomic-dl {0}".format(self.name))
 
     def getTitle(self):
         """Return the title of this comic"""
