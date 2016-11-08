@@ -57,6 +57,7 @@ def main():
     args=cli.getArgs()
     cls=getComicClass(args.comic)
     if(cls is None):
+        print("Comic not supported")
         sys.exit(1)
 
     comic=cls(args.comic)
