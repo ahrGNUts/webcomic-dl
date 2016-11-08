@@ -8,6 +8,7 @@ class TemplarAZComic(Comic):
     directory="Templar, Arizona"
     urlRegex=r'^((?:.+[/\.])?templaraz\.com)(/|$)'
     name="templaraz"
+    first="http://templaraz.com/2005/05/26/chapter-1-the-great-outdoors-cover/"
     firstSelector=".nav-first > a"
     
     def getNumber(self):
