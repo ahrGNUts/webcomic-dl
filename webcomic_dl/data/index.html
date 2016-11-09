@@ -123,6 +123,7 @@
 				loadComic();
 			});
 			xhr.open("GET", "info.json");
+			xhr.overrideMimeType("application/json");
 			xhr.send();
 			window.onhashchange=function() {
 				loadComic();
@@ -176,9 +177,11 @@
 				}
 				if("title" in comic) {
 					document.getElementById("comic-title").innerHTML=comic["title"];
+					document.title=comic["title"];
 				}
 				else {
 					document.getElementById("comic-title").innerHTML="";
+					document.title="";
 				}
 				while(news.lastChild) {news.removeChild(news.lastChild)};
 				if("text" in comic) {
