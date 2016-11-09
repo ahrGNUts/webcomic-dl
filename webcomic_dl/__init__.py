@@ -22,6 +22,8 @@ class Comic:
     """The Site's Title"""
     textSelector=None
     """the CSS selector for supplemental text"""
+    printSelector=None
+    """the CSS selector for the "Buy this as a print" link"""
     directory="comics"
     """the default directory name to download into"""
     urlRegex=".*"
@@ -100,6 +102,10 @@ class Comic:
         """Return the image URL for this page"""
         self.load()
         return self.page.getURL(self.imgSelector, "src")
+
+    def getPrintURL(self):
+        """Get the URL to buy a print of the comic from the artist. SUPPORT ARTISTS!"""
+        return self.page.getURL(self.printSelector)
 
     def getBonusImg(self):
         """Return the bonus image URL for this page"""
@@ -190,6 +196,8 @@ class Comic:
             d["bonus"]=self.getBonusImgFilename()
         if(self.getSupplementalText()):
             d["text"]=self.getSupplementalText()
+        if(self.getPrintURL()):
+            d["print"]=self.getPrintURL()
         return d
 
     def download(self, dirname:str=None, overwrite=False):
