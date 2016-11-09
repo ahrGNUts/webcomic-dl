@@ -8,6 +8,7 @@ import os
 import json
 import sys
 import traceback
+from shutil import copyfile
 
 def getComicClass(comic):
     """Return the class appropriate for a given comic name or URL"""
@@ -66,7 +67,7 @@ def main():
         comic.setDir(args.directory)
 
     meta=getMeta(comic.directory)
-
+    htmlCopied=False
     while comic:
         n=comic.number
         if(not args.resume or getMetaItem(meta, n) is None):
@@ -84,6 +85,10 @@ def main():
                     addMetaItem(meta, num, False)
         else:
             comic=comic.getNextComic(blank=True)
+        if(not htmlCopied):
+            print("dfsjdsfjsdafjsdal:")
+            copyfile(webcomic_dl.htmlFile, comic.directory)
+            htmlCopied=True
     print("Done!")
 
 try:

@@ -9,6 +9,9 @@ import json
 from webcomic_dl.webpage import Webpage
 import sys
 
+htmlFile=os.path.join(os.path.abspath(os.path.dirname(__file__)), "data", "index.html")
+print(htmlFile)
+
 class Comic:
     nextSelector=None
     """the CSS selector for the "next" link"""

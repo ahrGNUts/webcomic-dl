@@ -3,6 +3,7 @@
 Download the archives of a webcomic for offline reading
 
 ```
+/home/dn3s/projects/software/webcomic-dl/webcomic_dl/data/index.html
 usage: webcomic-dl [-h] [-c n] [-f] [-d dir] [-o] [-n] [--metadata-file file]
                    [-m] [-p] [-v]
                    comic
