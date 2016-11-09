@@ -50,6 +50,11 @@ def getArgs():
             action="store_true",
             help="Save metadata JSON pretty-printed"
             )
+    p.add_argument("-i", "--index",
+            dest="html",
+            action="store_true",
+            help="Places an HTML-based viewer called index.html in the output directory"
+            )
     p.add_argument("-v", "--verbose",
             dest="verbose",
             action="store_true",

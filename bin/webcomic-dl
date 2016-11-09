@@ -67,7 +67,7 @@ def main():
         comic.setDir(args.directory)
 
     meta=getMeta(comic.directory)
-    htmlCopied=False
+    htmlCopied=not args.html
     while comic:
         n=comic.number
         if(not args.resume or getMetaItem(meta, n) is None):
@@ -86,8 +86,7 @@ def main():
         else:
             comic=comic.getNextComic(blank=True)
         if(not htmlCopied):
-            print("dfsjdsfjsdafjsdal:")
-            copyfile(webcomic_dl.htmlFile, comic.directory)
+            copyfile(webcomic_dl.htmlFile, os.path.join(comic.directory, "index.html"))
             htmlCopied=True
     print("Done!")
 

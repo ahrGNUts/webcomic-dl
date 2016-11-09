@@ -5,7 +5,7 @@ Download the archives of a webcomic for offline reading
 ```
 /home/dn3s/projects/software/webcomic-dl/webcomic_dl/data/index.html
 usage: webcomic-dl [-h] [-c n] [-f] [-d dir] [-o] [-n] [--metadata-file file]
-                   [-m] [-p] [-v]
+                   [-m] [-p] [-i] [-v]
                    comic
 
 Download a webcomic archive
@@ -38,5 +38,7 @@ optional arguments:
                         in <output_dir>/info.json
   -m, --metadata-only   Don't download comics, just metadata
   -p, --pretty          Save metadata JSON pretty-printed
+  -i, --index           Places an HTML-based viewer called index.html in the
+                        output directory
   -v, --verbose         Be verbose. Mostly for testing purposes
 ```
