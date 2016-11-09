@@ -9,7 +9,8 @@ class HarkAVagrantComic(Comic):
     urlRegex='^https?://(?:www\.)?harkavagrant\.com(?:/|$)'
     name="harkavagrant"
     first="http://www.harkavagrant.com/index.php?id=1"
-    textSelector=".rss-content"
+    textSelector=".black11 .rss-content"
+    printSelector='table td[colspan="2"] > center:last-child a:last-child'
 
     def getTitle(self):
         return self.getAlt()
