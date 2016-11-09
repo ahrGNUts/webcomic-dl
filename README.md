@@ -4,8 +4,8 @@ Download the archives of a webcomic for offline reading
 
 ```
 /home/dn3s/projects/software/webcomic-dl/webcomic_dl/data/index.html
-usage: webcomic-dl [-h] [-c n] [-f] [-d dir] [-o] [-n] [--metadata-file file]
-                   [-m] [-p] [-i] [-v]
+usage: webcomic-dl [-h] [-n n] [-f] [-d dir] [-o] [--no-resume]
+                   [-m--metadata-file file] [--metadata-only] [-c] [-i] [-v]
                    comic
 
 Download a webcomic archive
@@ -15,7 +15,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -c n, --count n       Maximum number of comics to download. 0 means
+  -n n, --max n         Maximum number of comics to download. 0 means
                         unlimited
   -f, --from-url        By default, webcomic-dl will download from the first
                         webcomic in the series, regardless of the URL. This
@@ -29,15 +29,17 @@ optional arguments:
   -o, --overwrite       Force overwriting of downloaded comics. By default,
                         webcomic-dl will not overwrite already-downloaded
                         comics.
-  -n, --no-resume       By default, webcomic-dl will resume downloads from
+  --no-resume           By default, webcomic-dl will resume downloads from
                         where it last left off. This flag overrides it. Does
                         not download already-downloaded comics unless -o is
                         also used, but still needs to download the webpage of
                         each comic
-  --metadata-file file  Specify where to save metadata. By default it is saved
+  -m--metadata-file file
+                        Specify where to save metadata. By default it is saved
                         in <output_dir>/info.json
-  -m, --metadata-only   Don't download comics, just metadata
-  -p, --pretty          Save metadata JSON pretty-printed
+  --metadata-only       Don't download comics, just metadata
+  -c, --compact         Disable pretty-printing the output JSON, if you're
+                        really trying to save some bytes
   -i, --index           Places an HTML-based viewer called index.html in the
                         output directory
   -v, --verbose         Be verbose. Mostly for testing purposes

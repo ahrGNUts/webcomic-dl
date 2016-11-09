@@ -7,7 +7,7 @@ def getArgs():
     p.add_argument("comic",
             help="the name or URL of the webcomic to comic download"
             )
-    p.add_argument("-c", "--count",
+    p.add_argument("-n", "--max",
             dest="max",
             metavar="n",
             default=0,
@@ -30,25 +30,25 @@ def getArgs():
             action="store_true",
             help="Force overwriting of downloaded comics. By default, webcomic-dl will not overwrite already-downloaded comics."
             )
-    p.add_argument("-n", "--no-resume",
+    p.add_argument("--no-resume",
             dest="resume",
             action="store_false",
             help="By default, webcomic-dl will resume downloads from where it last left off. This flag overrides it. Does not download already-downloaded comics unless -o is also used, but still needs to download the webpage of each comic"
             )
-    p.add_argument("--metadata-file",
+    p.add_argument("-m" "--metadata-file",
             dest="file",
             help="Specify where to save metadata. By default it is saved in <output_dir>/info.json",
             metavar="file"
             )
-    p.add_argument("-m", "--metadata-only",
+    p.add_argument("--metadata-only",
             dest="meta",
             action="store_true",
             help="Don't download comics, just metadata"
             )
-    p.add_argument("-p", "--pretty",
+    p.add_argument("-c", "--compact",
             dest="pretty",
-            action="store_true",
-            help="Save metadata JSON pretty-printed"
+            action="store_false",
+            help="Disable pretty-printing the output JSON, if you're really trying to save some bytes"
             )
     p.add_argument("-i", "--index",
             dest="html",
