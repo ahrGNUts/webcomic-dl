@@ -26,7 +26,7 @@ def getArgs():
             )
     p.add_argument("-n", "--max",
             dest="max",
-            metavar="n",
+            metavar="<n>",
             default=0,
             type=int,
             help="Maximum number of comics to download. 0 means unlimited"
@@ -38,7 +38,7 @@ def getArgs():
             )
     p.add_argument("-d", "--dir",
             dest="directory",
-            metavar="dir",
+            metavar="<dir>",
             default="",
             help="Specify an output directory"
             )
@@ -52,10 +52,10 @@ def getArgs():
             action="store_false",
             help="By default, webcomic-dl will resume downloads from where it last left off. This flag overrides it. Does not download already-downloaded comics unless -o is also used, but still needs to download the webpage of each comic"
             )
-    p.add_argument("-m" "--metadata-file",
+    p.add_argument("-m", "--metadata-file",
             dest="file",
             help="Specify where to save metadata. By default it is saved in <output_dir>/info.json",
-            metavar="file"
+            metavar="<file>"
             )
     p.add_argument("--metadata-only",
             dest="meta",

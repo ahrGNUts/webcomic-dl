@@ -70,8 +70,8 @@ maintainability:
 ##Usage
 
 ```
-usage: webcomic-dl [-h] [-n n] [-f] [-d dir] [-o] [--no-resume]
-                   [-m--metadata-file file] [--metadata-only] [-c] [-i] [-v]
+usage: webcomic-dl [-h] [-n <n>] [-f] [-d <dir>] [-o] [--no-resume]
+                   [-m <file>] [--metadata-only] [-c] [-i] [-v]
                    comic
 
 Download a webcomic archive
@@ -81,7 +81,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -n n, --max n         Maximum number of comics to download. 0 means
+  -n <n>, --max <n>     Maximum number of comics to download. 0 means
                         unlimited
   -f, --from-url        By default, webcomic-dl will download from the first
                         webcomic in the series, regardless of the URL. This
@@ -91,7 +91,8 @@ optional arguments:
                         download older comics. Thus, only use this if you are
                         either certain you will never want earlier comics, or
                         are willing to re-download the newer ones.
-  -d dir, --dir dir     Specify an output directory
+  -d <dir>, --dir <dir>
+                        Specify an output directory
   -o, --overwrite       Force overwriting of downloaded comics. By default,
                         webcomic-dl will not overwrite already-downloaded
                         comics.
@@ -100,7 +101,7 @@ optional arguments:
                         not download already-downloaded comics unless -o is
                         also used, but still needs to download the webpage of
                         each comic
-  -m--metadata-file file
+  -m <file>, --metadata-file <file>
                         Specify where to save metadata. By default it is saved
                         in <output_dir>/info.json
   --metadata-only       Don't download comics, just metadata
