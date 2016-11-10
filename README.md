@@ -5,6 +5,14 @@ Download the archives of a webcomic for offline reading.
 This is my first Python project, so things may be a little rough for a while,
 particularly the install process, but I'm learning fast!
 
+One nice thing about this program is it does all of the scraping with CSS
+selectors, so it's really easy to add support for a new comic!
+
+All info on this page is written only with Linux in mind. The code itself
+should be fairly portable, but and the installation should be relatively
+generic for a Python project, but I cannot offer any guidance on non-linux
+platforms. Feel free to share your experiences though!
+
 ##Requirements
 
 This was written specifically for Python 3, so make sure you have `python3` 
@@ -35,6 +43,29 @@ virtualenv -p python3 virtualenv
 
 Then when you want to use it, make sure you activate the virtualenv with
 `. <path_to_webcomic-dl>/virtualenv/bin/activate`.
+
+##Contributing
+
+If anyone has advice on overall design and architecture, I'd love to hear it!
+If you want to add support for your favorite webcomic, take a look at
+`webcomic_dl/comics`; I'll document it more thoroughly soon.
+
+Pull requests welcome!
+
+##Issues/TODO
+
+The program is perfectly usable now, but still needs some work for to improve
+maintainability:
+
+- Main control logic needs refactoring
+- Module layout is a little wonky. `Comic` should not be in
+  `webcomic_dl/__init__.py`
+- HTML viewer needs a heavy refactor/total rewrite; the code is very much a
+  quick hack
+- Clean up existing comments, docstrings, thouroughly document how to add comic
+  support, format existing comics consistently, create a starting template for
+  people to copy
+- Prettier progress display
 
 ##Usage
 
