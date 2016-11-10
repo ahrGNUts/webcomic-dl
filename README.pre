@@ -50,6 +50,10 @@ If anyone has advice on overall design and architecture, I'd love to hear it!
 If you want to add support for your favorite webcomic, take a look at
 `webcomic_dl/comics`; I'll document it more thoroughly soon.
 
+If you want to contribute directly, it's probably wise to setup a `virtualenv`,
+and please install the `pre_commit` hook (`cp pre_commit.sh
+.git/hooks/pre_commit`)
+
 Pull requests welcome!
 
 ##Issues/TODO
