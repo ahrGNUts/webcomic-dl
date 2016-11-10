@@ -1,3 +1,39 @@
 #webcomic-dl
 
-Download the archives of a webcomic for offline reading
+Download the archives of a webcomic for offline reading.
+
+This is my first Python project, so things may be a little rough for a while,
+particularly the install process, but I'm learning fast!
+
+##Requirements
+
+This was written specifically for Python 3, so make sure you have `python3` 
+installed. If you want to be extra-safe, install `virtualenv`.
+
+##Installation
+
+I may submit this to the Python Package Archive if I radically clean this up.
+But for now:
+
+```
+git clone 'https://github.com/dn3s/webcomic-dl.git'
+cd webcomic-dl
+./setup.py install
+```
+
+I'm still learning about packaing and distribution, so for now you may want to
+do this in a `virtualenv`. There's a `.gitignore` entry for a directory called
+`virtualenv`, so you can set it up there for painless updates:
+
+```
+git clone 'https://github.com/dn3s/webcomic-dl.git'
+cd webcomic-dl
+virtualenv -p python3 virtualenv
+. virtualenv/bin/activate
+./setup.py develop
+```
+
+Then when you want to use it, make sure you activate the virtualenv with
+`. <path_to_webcomic-dl>/virtualenv/bin/activate`.
+
+##Usage
