@@ -9,14 +9,15 @@ One nice thing about this program is it does all of the scraping with CSS
 selectors, so it's really easy to add support for a new comic!
 
 All info on this page is written only with Linux in mind. The code itself
-should be fairly portable, but and the installation should be relatively
+should be fairly portable, and the installation should be relatively
 generic for a Python project, but I cannot offer any guidance on non-linux
 platforms. Feel free to share your experiences though!
 
 ##Requirements
 
 This was written specifically for Python 3, so make sure you have `python3` 
-installed. If you want to be extra-safe, install `virtualenv`.
+installed. At this point, I would recommend installing in a `virtualenv` so
+make sure that's installed as well.
 
 ##Installation
 
@@ -53,6 +54,9 @@ If you want to add support for your favorite webcomic, take a look at
 If you want to contribute directly, it's probably wise to setup a `virtualenv`,
 and please install the pre-commit hook (`cp pre_commit.sh
 .git/hooks/pre-commit`)
+
+One other note, if you want to edit this README, edit `README.pre`, as
+`README.md` is overwritten by the pre-commit hook.
 
 Pull requests welcome!
 
