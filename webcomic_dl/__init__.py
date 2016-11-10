@@ -56,10 +56,11 @@ class Comic:
 
     May be used in the future for authentication or useragent strings.
     """
-    page=None
-    """The Webpage for this comic"""
     encoding=None
     """The character encoding of this comic's website"""
+
+    page=None
+    """The Webpage for this comic"""
 
     @classmethod
     def match(cls, s:str):
