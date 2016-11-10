@@ -51,8 +51,8 @@ If you want to add support for your favorite webcomic, take a look at
 `webcomic_dl/comics`; I'll document it more thoroughly soon.
 
 If you want to contribute directly, it's probably wise to setup a `virtualenv`,
-and please install the `pre_commit` hook (`cp pre_commit.sh
-.git/hooks/pre_commit`)
+and please install the pre-commit hook (`cp pre_commit.sh
+.git/hooks/pre-commit`)
 
 Pull requests welcome!
 
