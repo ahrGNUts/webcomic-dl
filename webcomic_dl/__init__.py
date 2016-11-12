@@ -58,6 +58,8 @@ class Comic:
     """
     encoding=None
     """The character encoding of this comic's website"""
+    extension=None
+    """The file extension of this comic's images"""
 
     page=None
     """The Webpage for this comic"""
@@ -133,18 +135,18 @@ class Comic:
             return self.page.getURL(self.bonusSelector, "src")
         return None
 
-    @staticmethod
-    def getFileExtension(url:str):
+    def getFileExtension(self, url:str):
         """Return the filename extension for the image"""
+        if(self.extension):
+            return self.extension
         if(url):
             parts=url.split(".")
             if(len(parts) > 1):
                 return parts[-1]
         return None
 
-    @classmethod
-    def imgFilename(cls, url, number, title="", suffix=""):
-        ext=cls.getFileExtension(url)
+    def imgFilename(self, url, number, title="", suffix=""):
+        ext=self.getFileExtension(url)
         num="{0}".format(number).zfill(6)
         if(title):
             name="{0} - {1}{2}.{3}".format(num, title, suffix, ext)
