@@ -1,4 +1,5 @@
-#webcomic-dl
+webcomic-dl
+================================================================================
 
 Download the archives of a webcomic for offline reading.
 
@@ -13,13 +14,15 @@ should be fairly portable, and the installation should be relatively
 generic for a Python project, but I cannot offer any guidance on non-linux
 platforms. Feel free to share your experiences though!
 
-##Requirements
+Requirements
+--------------------------------------------------------------------------------
 
 This was written specifically for Python 3, so make sure you have `python3` 
 installed. At this point, I would recommend installing in a `virtualenv` so
 make sure that's installed as well.
 
-##Installation
+Installation
+--------------------------------------------------------------------------------
 
 I may submit this to the Python Package Archive if I radically clean this up.
 But for now:
@@ -45,7 +48,8 @@ virtualenv -p python3 virtualenv
 Then when you want to use it, make sure you activate the virtualenv with
 `. <path_to_webcomic-dl>/virtualenv/bin/activate`.
 
-##Contributing
+Contributing
+--------------------------------------------------------------------------------
 
 If anyone has advice on overall design and architecture, I'd love to hear it!
 If you want to add support for your favorite webcomic, take a look at
@@ -60,7 +64,8 @@ One other note, if you want to edit this README, edit `README.pre`, as
 
 Pull requests welcome!
 
-##Issues/TODO
+Issues/TODO
+--------------------------------------------------------------------------------
 
 The program is perfectly usable now, but still needs some work for to improve
 maintainability:
@@ -75,7 +80,8 @@ maintainability:
   people to copy
 - Prettier progress display
 
-##Usage
+Usage
+--------------------------------------------------------------------------------
 
 ```
 usage: webcomic-dl [-h] [-n <n>] [-f] [-d <dir>] [-o] [--no-resume]
